@@ -51,11 +51,19 @@ match_results
 
 ## 3. Pipeline Steps
 
-### Step 1 — PDF Parsing (LLM Vision)
-- Render each PDF page to image via `PyMuPDF (fitz)`
-- Send page images to LLM with structured extraction prompt
-- LLM returns per-page JSON: room headers + line items (`description`, `quantity`, `unit`, `unit_price`, `total`, `page_number`, `bbox` approximate row position)
-- Use Pydantic `response_format` for reliable structured output
+### Step 1 — PDF Parsing (Hybrid: LLM Vision + PyMuPDF)
+
+Two-phase approach — LLM vision extracts *content*, PyMuPDF text search locates *positions*:
+
+1. **Content extraction** — Render each page to a 200 DPI image via PyMuPDF, send to `claude-3-5-sonnet` with Pydantic `response_format` for structured output. LLM returns per-page room headers + line items (`description`, `quantity`, `unit`, `unit_price`, `total`).
+2. **Bbox location** — For each extracted description, use `fitz.Page.search_for()` to find the text position on the page. Extend to full page width to represent the row region.
+
+This avoids relying on the LLM for pixel-accurate coordinates (unreliable) while still getting precise spatial data for annotation.
+
+**Pydantic schemas** (`backend/app/schemas.py`):
+- `ExtractedLineItem` — description, quantity, unit, unit_price, total, bbox `(x0, y0, x1, y1)`, page_number
+- `ExtractedRoom` — room_name, line_items
+- `ParsedDocument` — source (`"jdr"` | `"insurance"`), rooms
 
 ### Step 2 — Room Mapping (LLM)
 - Single LLM call with both room lists → returns mapping as JSON:
@@ -74,7 +82,9 @@ match_results
   - Run Hungarian algorithm (via `scipy.optimize.linear_sum_assignment`) to find optimal 1:1 assignment
   - Apply similarity threshold (e.g. 0.85) — pairs below threshold are unmatched
 - Unmatched JDR items → **Blue**; unmatched Insurance items → **Nugget**
-- For each matched pair, **deterministic code** applies ±2% tolerance on `quantity`, `unit`, `unit_price`:
+- For each matched pair, **deterministic code** checks:
+  - `unit` — exact categorical match (SF, LF, EA, etc.)
+  - `quantity`, `unit_price` — ±2% numeric tolerance
   - All pass → **Green**; any fail → **Orange** with diff notes
 
 ### Step 4 — Annotated PDF Generation
