@@ -31,13 +31,16 @@ Group items by room. For each line item extract:
 - description: the item description text (without the leading line number)
 - quantity: numeric quantity
 - unit: unit of measure (SF, LF, EA, HR, DA, SY, etc.)
-- unit_price: per-unit cost (the REPLACE or primary cost column value)
-- total: the TOTAL column value
+- unit_price: per-unit cost. For JDR proposals this is the REPLACE column. For insurance proposals this is the UNIT PRICE column.
+- total: the line item total. For JDR proposals this is the TOTAL column. For insurance proposals this is the RCV column (Replacement Cost Value), NOT the ACV column.
 
 Rules:
-- Skip cover pages, summaries, notes, and non-line-item text.
+- Skip cover pages, summary/totals pages, notes, photo pages, and non-line-item text.
 - If a room continues from a previous page (e.g. "CONTINUED - Bathroom"), use just the room name ("Bathroom").
-- Only extract numbered line items from the table, not subtotals or room totals."""
+- Only extract numbered line items from the table, not subtotals or room totals.
+- Subsection headers within a room (e.g. WALLS, TRIM/DOORS, FLOORS, CARPET, BATHTUB, MISCELLANEOUS) are NOT separate rooms. Group all items under the parent room name.
+- Some insurance formats show quantity and unit price on a separate line below the description. Combine them into one line item.
+- Items marked as "Bid Item" or "OPEN ITEM" with no pricing should still be extracted with null values for unit_price and total."""
 
 
 def _render_page_b64(page: fitz.Page) -> str:
