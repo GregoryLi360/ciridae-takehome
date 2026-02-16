@@ -1,0 +1,119 @@
+
+=== Main Level (1 items) ===
+  Haul debris - per pickup truck load - including dump fe      1.5 EA         $288.6  p5  [desc,qty,unit,price,total]
+
+=== Garage (14 items) ===
+  Contents - move out then reset - Large room                  1.0 EA         $151.1  p5  [desc,qty,unit,price,total]
+  Freezer - Remove & reset                                     1.0 EA         $73.64  p5  [desc,qty,unit,price,total]
+  Batt insulation - 4" - R11- unfaced batt                     6.0 SF          $6.66  p5  [desc,qty,unit,price,total]
+  Tape joint for new to existing drywall - per LF             17.0 LF        $231.51  p5  [desc,qty,unit,price,total]
+  Texture drywall - light hand texture                        68.0 SF        $102.55  p5  [desc,qty,unit,price,total]
+  1/2" - drywall per LF - up to 2' tall                       17.0 LF        $262.61  p5  [desc,qty,unit,price,total]
+  Paint the walls and ceiling - one coat                   1132.69 SF       $1211.83  p5  [desc,qty,unit,price,total]
+  Baseboard - 3 1/4" MDF w/profile                            17.0 LF         $81.35  p6  [desc,qty,unit,price,total]
+  Door opening (jamb & casing) - 32"to36"wide - paint gra      1.0 EA        $227.36  p6  [desc,qty,unit,price,total]
+  Paint baseboard - two coats (For replace baseboared)        17.0 LF         $41.06  p6  [desc,qty,unit,price,total]
+  Paint baseboard - one coat                                  55.0 LF         $88.39  p6  [desc,qty,unit,price,total]
+  Paint door or window opening - 2 coats (per side)            1.0 EA         $52.08  p6  [desc,qty,unit,price,total]
+  Interior door - Reset - slab only                            1.0 EA         $16.51  p6  [desc,qty,unit,price,total]
+  Paint door slab only - 2 coats (per side)                    1.0 EA         $61.26  p6  [desc,qty,unit,price,total]
+
+=== Laundry Room (18 items) ===
+  Final cleaning - construction - Residential                36.67 SF         $17.63  p6  [desc,qty,unit,price,total]
+  Detach & Reset Washer/Washing Machine - Front-loading        1.0 EA         $71.64  p6  [desc,qty,unit,price,total]
+  Detach & Reset Dryer - Electric                              1.0 EA         $55.23  p7  [desc,qty,unit,price,total]
+  Detach & Reset Shelving - 12" - in place                     7.0 LF         $72.26  p7  [desc,qty,unit,price,total]
+  Seal & paint wood shelving, 12"- 24" width                   7.0 LF         $52.46  p7  [desc,qty,unit,price,total]
+  Tape joint for new to existing drywall - per LF            24.67 LF        $335.97  p7  [desc,qty,unit,price,total]
+  Texture drywall - light hand texture                        98.0 SF        $147.79  p7  [desc,qty,unit,price,total]
+  1/2" - drywall per LF - up to 2' tall                      24.67 LF        $381.05  p7  [desc,qty,unit,price,total]
+  Paint the walls and ceiling - one coat                    258.67 SF        $276.74  p7  [desc,qty,unit,price,total]
+  Baseboard - 3 1/4" MDF w/profile                           24.67 LF        $118.03  p7  [desc,qty,unit,price,total]
+  Door opening (jamb & casing) - 32"to36"wide - paint gra      1.0 EA        $227.36  p7  [desc,qty,unit,price,total]
+  Paint baseboard - two coats (For replace baseboardred)     24.67 LF         $59.59  p7  [desc,qty,unit,price,total]
+  Paint baseboard - one coat                                 24.67 LF         $39.63  p7  [desc,qty,unit,price,total]
+  Paint door or window opening - 2 coats (per side)            1.0 EA         $52.08  p7  [desc,qty,unit,price,total]
+  Interior door - Reset - slab only                            1.0 EA         $16.51  p7  [desc,qty,unit,price,total]
+  Paint door slab only - 2 coats (per side)                    1.0 EA         $61.26  p7  [desc,qty,unit,price,total]
+  Floor leveling cement - Average                            36.67 SF         $118.1  p8  [desc,qty,unit,price,total]
+  Tile floor covering                                        36.67 SF        $502.13  p8  [desc,qty,unit,price,total]
+
+=== Hall Bathroom (20 items) ===
+  Final cleaning - construction - Residential                43.33 SF         $20.81  p8  [desc,qty,unit,price,total]
+  Install Toilet                                               1.0 EA        $293.26  p8  [desc,qty,unit,price,total]
+  Install Bathtub                                              1.0 EA        $631.71  p8  [desc,qty,unit,price,total]
+  Vanity                                                       3.0 LF        $911.02  p8  [desc,qty,unit,price,total]
+  Batt insulation - 4" - R11- unfaced batt                    45.0 SF         $49.83  p8  [desc,qty,unit,price,total]
+  1/2" drywall - hung, taped, floated, ready for paint (T     63.0 SF        $240.74  p8  [desc,qty,unit,price,total]
+  1/2" water rock (greenboard) hung, taped ready for text     63.0 SF        $224.11  p8  [desc,qty,unit,price,total]
+  Ceramic/porcelain tile (Tub Surround)                       63.0 SF       $1008.74  p9  [desc,qty,unit,price,total]
+  Tape joint for new to existing drywall - per LF            19.33 LF        $263.26  p9  [desc,qty,unit,price,total]
+  Texture drywall - light hand texture                        78.0 SF        $117.61  p9  [desc,qty,unit,price,total]
+  1/2" - drywall per LF - up to 2' tall                      14.33 LF        $221.36  p9  [desc,qty,unit,price,total]
+  Paint part of the walls and ceiling - one coat            221.83 SF        $237.33  p9  [desc,qty,unit,price,total]
+  Baseboard - 3 1/4" MDF w/profile                           14.33 LF         $68.57  p9  [desc,qty,unit,price,total]
+  Door opening (jamb & casing) - 32"to36"wide - paint gra      1.0 EA        $227.36  p9  [desc,qty,unit,price,total]
+  Paint baseboard - two coats (For replace baseboarder)      14.83 LF         $35.84  p9  [desc,qty,unit,price,total]
+  Paint door or window opening - 2 coats (per side)            1.0 EA         $52.08  p9  [desc,qty,unit,price,total]
+  Interior door - Reset - slab only                            1.0 EA         $16.51  p9  [desc,qty,unit,price,total]
+  Paint door slab only - 2 coats (per side)                    1.0 EA         $61.26  p9  [desc,qty,unit,price,total]
+  Floor leveling cement - Average                            43.33 SF        $139.55  p9  [desc,qty,unit,price,total]
+  Tile floor covering                                        43.33 SF         $593.3  p9  [desc,qty,unit,price,total]
+
+=== Bedroom (15 items) ===
+  Batt insulation - 4" - R11- unfaced batt                     6.0 SF          $6.66  p10  [desc,qty,unit,price,total]
+  Tape joint for new to existing drywall - per LF             14.0 LF        $190.66  p10  [desc,qty,unit,price,total]
+  Texture drywall - light hand texture                        56.0 SF         $84.45  p10  [desc,qty,unit,price,total]
+  1/2" - drywall per LF - up to 2' tall                       14.0 LF        $216.25  p10  [desc,qty,unit,price,total]
+  Paint the walls and ceiling - one coat                    502.44 SF        $537.55  p10  [desc,qty,unit,price,total]
+  Baseboard - 3 1/4" MDF w/profile                            14.0 LF         $67.01  p10  [desc,qty,unit,price,total]
+  Door opening (jamb & casing) - 32"to36"wide - paint gra      1.0 EA        $227.36  p10  [desc,qty,unit,price,total]
+  Paint baseboard - two coats (For replace baseboared)        14.0 LF         $33.82  p10  [desc,qty,unit,price,total]
+  Paint baseboard - one coat                                  31.8 LF          $51.1  p10  [desc,qty,unit,price,total]
+  Paint door or window opening - 2 coats (per side)            1.0 EA         $52.08  p10  [desc,qty,unit,price,total]
+  Interior door - Reset - slab only                            1.0 EA         $16.51  p10  [desc,qty,unit,price,total]
+  Paint door slab only - 2 coats (per side)                    1.0 EA         $61.26  p11  [desc,qty,unit,price,total]
+  Remove Carpet (Some carpet and pad was removed by mitig   108.04 SF         $38.89  p11  [desc,qty,unit,price,total]
+  Carpet pad - per specs from independent pad analysis        28.0 SF         $19.29  p11  [desc,qty,unit,price,total]
+  Carpet - per specs from independent carpet analysis       161.83 SF        $967.48  p11  [desc,qty,unit,price,total]
+
+=== BRM Closet (2 items) ===
+  Remove Carpet                                              16.69 SF          $6.01  p11  [desc,unit,price]
+  Carpet - per specs from independent carpet analysis        38.25 SF        $228.66  p11  [desc,unit,price]
+
+=== Hall Closet (2 items) ===
+  Remove Carpet (Some carpet and pad was removed by mitig     8.67 SF          $3.12  p12  [desc,qty,unit,price,total]
+  Carpet - per specs from independent carpet analysis        28.58 SF        $170.86  p12  [desc,qty,unit,price,total]
+
+=== Living Room (4 items) ===
+  Contents - move out then reset - Large room (Grand Pian      1.0 EA         $151.1  p12  [desc,qty,unit,price,total]
+  Remove Carpet (Some carpet and pad was removed by mitig   321.01 SF        $115.56  p12  [desc,unit,price]
+  Carpet pad - per specs from independent pad analysis        18.0 SF         $12.39  p12  [desc,qty,unit,price,total]
+  Carpet - per specs from independent carpet analysis       383.08 SF       $2290.14  p12  [desc,unit,price]
+
+=== Stair Closet (4 items) ===
+  Contents - move out then reset - Small room                  1.0 EA         $75.62  p13  [desc,qty,unit,price,total]
+  Remove Carpet (Some carpet and pad was removed by mitig     15.1 SF          $5.43  p13  [desc,qty,unit,price,total]
+  Carpet pad - per specs from independent pad analysis         9.0 SF           $6.2  p13  [desc,qty,unit,price,total]
+  Carpet - per specs from independent carpet analysis        45.25 SF        $270.51  p13  [desc,qty,unit,price,total]
+
+=== Offset (9 items) ===
+  Tape joint for new to existing drywall - per LF              7.0 LF         $95.32  p13  [desc,qty,unit,price,total]
+  Texture drywall - light hand texture                        28.0 SF         $42.22  p14  [desc,qty,unit,price,total]
+  1/2" - drywall per LF - up to 2' tall                        7.0 LF        $108.14  p14  [desc,qty,unit,price,total]
+  Paint the walls - one coat                                202.87 SF        $217.03  p14  [desc,qty,unit,price,total]
+  Baseboard - 3 1/4" MDF w/profile                             7.0 LF         $33.49  p14  [desc,qty,unit,price,total]
+  Paint baseboard - two coats (For replace baseboared)         7.0 LF         $16.91  p14  [desc,qty,unit,price,total]
+  Paint baseboard - one coat (Undamaged baseboards)          14.63 LF         $23.51  p14  [desc,qty,unit,price,total]
+  Carpet pad - per specs from independent pad analysis        40.4 SF         $27.83  p14  [desc,qty,unit,price,total]
+  Carpet - per specs from independent carpet analysis        66.17 SF        $395.56  p14  [desc,qty,unit,price,total]
+
+=== Dining Room (3 items) ===
+  Contents - move out then reset                               1.0 EA        $100.75  p15  [desc,qty,unit,price,total]
+  Remove Carpet                                              147.0 SF         $52.92  p15  [desc,qty,unit,price,total]
+  Carpet - per specs from independent carpet analysis       170.83 SF       $1021.27  p15  [desc,qty,unit,price,total]
+
+=== Labor Minimums Applied (3 items) ===
+  Insulation labor minimum                                     1.0 EA        $216.51  p16  [desc,qty,unit,price,total]
+  Cleaning labor minimum                                       1.0 EA        $152.87  p16  [desc,qty,unit,price,total]
+  Cabinetry labor minimum                                      1.0 EA         $83.35  p16  [desc,qty,unit,price,total]
