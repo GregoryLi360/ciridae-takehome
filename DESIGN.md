@@ -53,12 +53,13 @@ match_results
 
 ### Step 1 — PDF Parsing (Hybrid: LLM Vision + PyMuPDF)
 
-Two-phase approach — LLM vision extracts *content*, PyMuPDF text search locates *positions*:
+Three-phase approach within a single `parse_document` call:
 
-1. **Content extraction** — Render each page to a 200 DPI image via PyMuPDF, send to `claude-3-5-sonnet` with Pydantic `response_format` for structured output. LLM returns per-page room headers + line items (`description`, `quantity`, `unit`, `unit_price`, `total`).
-2. **Bbox location** — For each extracted description, use `fitz.Page.search_for()` to find the text position on the page. Extend to full page width to represent the row region.
+1. **Room splitting (LLM)** — Render each page to a 200 DPI image, send to LLM to identify which room sections appear on each page and whether they are new or continued. Returns a document-level room map (room name → page ranges).
+2. **Line item extraction (LLM)** — For each page, send the image along with the known room context from phase 1. LLM extracts line items and assigns them to the correct room. Structured output via Pydantic `response_format`.
+3. **Bbox location (PyMuPDF)** — For each extracted description, use `fitz.Page.search_for()` to find the text position on the page. Extend to full page width to represent the row region.
 
-This avoids relying on the LLM for pixel-accurate coordinates (unreliable) while still getting precise spatial data for annotation.
+Splitting rooms first ensures consistent naming across pages (e.g. "CONTINUED - Bathroom" maps back to "Bathroom") and gives the extraction LLM explicit room context rather than requiring it to infer structure.
 
 **Pydantic schemas** (`backend/app/schemas.py`):
 - `ExtractedLineItem` — description, quantity, unit, unit_price, total, bbox `(x0, y0, x1, y1)`, page_number
