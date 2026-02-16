@@ -13,5 +13,8 @@ for room in result.rooms:
         qty = f"{item.quantity}" if item.quantity is not None else "?"
         unit = item.unit or "?"
         total = f"${item.total}" if item.total is not None else "$?"
-        bbox_str = "bbox" if item.bbox else "NO BBOX"
-        print(f"  {item.description[:55]:<55} {qty:>8} {unit:<4} {total:>12}  p{item.page_number}  {bbox_str}")
+        b = item.bboxes
+        found = [f for f in ["desc", "qty", "unit", "price", "total"]
+                 if getattr(b, {"desc": "description", "qty": "quantity", "unit": "unit", "price": "unit_price", "total": "total"}[f]) is not None]
+        bbox_str = ",".join(found) if found else "NO BBOX"
+        print(f"  {item.description[:55]:<55} {qty:>8} {unit:<4} {total:>12}  p{item.page_number}  [{bbox_str}]")

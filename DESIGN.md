@@ -3,68 +3,74 @@
 ## 1. System Architecture
 
 ```
-┌─────────────┐     ┌──────────────────────────────────────────┐     ┌─────────────┐
-│  React/Vite  │────▶│  FastAPI Backend                         │────▶│  Postgres    │
-│  Frontend    │◀────│                                          │◀────│  (SQLAlchemy)│
-└─────────────┘     │  ┌────────┐ ┌─────────┐ ┌─────────────┐ │     └─────────────┘
+┌─────────────┐     ┌──────────────────────────────────────────┐
+│  React/Vite │────▶│  FastAPI Backend                         │
+│  Frontend   │◀────│                                          │
+└─────────────┘     │  ┌────────┐  ┌─────────┐ ┌─────────────┐ │
                     │  │PDF Parse│▶│ LLM     │▶│ Markup Gen  │ │
-                    │  └────────┘ │ Matching │ └─────────────┘ │
-                    │             └─────────┘                  │
+                    │  └────────┘  │ Matching│ └─────────────┘ │
+                    │              └─────────┘                 │
                     └──────────┬───────────────────────────────┘
                                │
                     ┌──────────▼──────────┐
-                    │ Ciridae LLM Gateway  │
+                    │ Ciridae LLM Gateway │
                     └─────────────────────┘
 ```
 
-## 2. Data Model
+## 2. Data Model (Pydantic)
 
-```sql
-jobs
-  id            UUID PK
-  status        ENUM(pending, processing, complete, failed)
-  created_at    TIMESTAMP
-  jdr_filename  TEXT
-  ins_filename  TEXT
+```python
+Bbox = tuple[float, float, float, float]
 
-line_items
-  id            UUID PK
-  job_id        UUID FK → jobs
-  source        ENUM(jdr, insurance)
-  room_raw      TEXT          -- original room name from PDF
-  room_mapped   TEXT          -- normalized room key after mapping
-  description   TEXT
-  quantity      DECIMAL
-  unit          TEXT
-  unit_price    DECIMAL
-  total         DECIMAL
-  page_number   INT
+class LineItemBboxes(BaseModel):
+    description: Bbox | None = None
+    quantity: Bbox | None = None
+    unit: Bbox | None = None
+    unit_price: Bbox | None = None
+    total: Bbox | None = None
 
-match_results
-  id            UUID PK
-  job_id        UUID FK → jobs
-  jdr_item_id   UUID FK → line_items (nullable)
-  ins_item_id   UUID FK → line_items (nullable)
-  classification ENUM(green, orange, blue, nugget)
-  notes         TEXT          -- rationale annotation
+class ExtractedLineItem(BaseModel):
+    description: str
+    quantity: Decimal | None = None
+    unit: str | None = None
+    unit_price: Decimal | None = None
+    total: Decimal | None = None
+    bboxes: LineItemBboxes = LineItemBboxes()
+    page_number: int
+
+class ExtractedRoom(BaseModel):
+    room_name: str
+    line_items: list[ExtractedLineItem]
+
+class ParsedDocument(BaseModel):
+    source: str                  # "jdr" | "insurance"
+    rooms: list[ExtractedRoom]
 ```
 
 ## 3. Pipeline Steps
 
 ### Step 1 — PDF Parsing (Hybrid: LLM Vision + PyMuPDF)
 
-Three-phase approach within a single `parse_document` call:
+Three-phase approach within a single `parse_document()` call:
 
-1. **Room splitting (LLM)** — Render each page to a 200 DPI image, send to LLM to identify which room sections appear on each page and whether they are new or continued. Returns a document-level room map (room name → page ranges).
-2. **Line item extraction (LLM)** — For each page, send the image along with the known room context from phase 1. LLM extracts line items and assigns them to the correct room. Structured output via Pydantic `response_format`.
-3. **Bbox location (PyMuPDF)** — For each extracted description, use `fitz.Page.search_for()` to find the text position on the page. Extend to full page width to represent the row region.
+1. **Room splitting (LLM)** — Render each page to a 200 DPI PNG via PyMuPDF, send to `claude-3-7-sonnet` to identify room sections. Returns canonical room names per page with continuation flags (e.g. "CONTINUED - Bathroom" → "Bathroom").
+2. **Line item extraction (LLM)** — For each page that has rooms, send the image with the known room list from phase 1. LLM extracts numbered line items with description, quantity, unit, unit_price, total, and assigns each to a room. Structured output via Pydantic `response_format`.
+3. **Per-field bbox location (PyMuPDF)** — For each extracted line item, use `fitz.Page.search_for()` to locate individual field positions on the page:
+   - `description` — progressively shorter prefix search (60, 40, 25 chars)
+   - `quantity`, `unit_price`, `total` — number search with comma formatting, constrained to the same row (±15pt vertical tolerance)
+   - `unit` — text search constrained to the same row
 
-Splitting rooms first ensures consistent naming across pages (e.g. "CONTINUED - Bathroom" maps back to "Bathroom") and gives the extraction LLM explicit room context rather than requiring it to infer structure.
+Each field gets its own tight `(x0, y0, x1, y1)` bbox for targeted highlighting during annotation.
 
 **Pydantic schemas** (`backend/app/schemas.py`):
-- `ExtractedLineItem` — description, quantity, unit, unit_price, total, bbox `(x0, y0, x1, y1)`, page_number
+- `LineItemBboxes` — per-field bboxes: description, quantity, unit, unit_price, total
+- `ExtractedLineItem` — description, quantity, unit, unit_price, total, bboxes (`LineItemBboxes`), page_number
 - `ExtractedRoom` — room_name, line_items
 - `ParsedDocument` — source (`"jdr"` | `"insurance"`), rooms
+
+**LLM response models** (internal to `parse.py`):
+- `_PageRooms` → `_RoomSection` (room_name, is_continuation)
+- `_LLMPageItems` → `_LLMLineItem` (description, quantity, unit, unit_price, total, room_name)
 
 ### Step 2 — Room Mapping (LLM)
 - Single LLM call with both room lists → returns mapping as JSON:
@@ -91,7 +97,7 @@ Splitting rooms first ensures consistent naming across pages (e.g. "CONTINUED - 
 ### Step 4 — Annotated PDF Generation
 - **Tool:** `PyMuPDF (fitz)`
 - Open the original JDR PDF
-- For each line item, draw colored highlight rectangle over its row region using bbox from Step 1
+- For each line item, draw colored highlight over the description and relevant metadata fields using per-field bboxes from Step 1
 - Add inline annotation with rationale note
 - Append summary page per room listing Nuggets (insurance-only items)
 - Save as new PDF
@@ -117,28 +123,30 @@ Single-page app with three states:
 
 ## 6. LLM Usage
 
-All calls go through Ciridae Gateway (`https://llm-gateway-5q22j.ondigitalocean.app`).
+All calls go through Ciridae Gateway (`https://api.llmgateway.ciridae.app`).
 
-| Call                | Model/Service              | Input                              | Output Format   |
+| Call                | Model                    | Input                              | Output Format   |
 |---------------------|----------------------------|------------------------------------|-----------------|
-| PDF parsing         | `claude-3-5-sonnet`        | Page images + extraction prompt    | Pydantic schema |
+| Room splitting      | `claude-3-7-sonnet`      | Page image + room ID prompt        | Pydantic schema |
+| Line item extraction| `claude-3-7-sonnet`      | Page image + room context + extraction prompt | Pydantic schema |
 | Room mapping        | `fast-production`          | Two room-name lists                | JSON array      |
 | Description embeddings | `text-embedding-3-small` | All line-item descriptions         | Vector arrays   |
 
-**Cost control:** Batch pages where possible for parsing. Embeddings are a single batch call per document. Matching is pure compute (cosine sim + Hungarian algorithm). Expect ~10-20 LLM calls + 2 embedding calls per job.
+**Cost control:** Two LLM calls per page (room split + extraction). Embeddings are a single batch call per document. Matching is pure compute (cosine sim + Hungarian algorithm).
 
 ## 7. Key Design Decisions
 
 - **LLM vision for PDF parsing** — Xactimate PDFs vary in layout; LLM vision handles tables, merged cells, and formatting inconsistencies without brittle heuristics
+- **Per-field bboxes** — Each metadata field (description, qty, unit, price, total) gets its own bbox so the annotation step can highlight specific fields that differ, not just the entire row
+- **Two-phase LLM parsing** — Room splitting first gives the extraction LLM explicit context, ensures consistent room naming across pages, and avoids hallucinated room assignments
 - **Embeddings for matching, code for math** — Embedding similarity + Hungarian algorithm gives fast, deterministic, cheap matching; ±2% numeric comparison stays as code
 - **LLM only where irreplaceable** — Room mapping (fuzzy name resolution with splits/merges) and PDF parsing (vision) are the only LLM calls; everything else is compute
-- **PyMuPDF for annotation** — Preserves original PDF layout; draws colored rectangles and text annotations precisely using bbox coordinates from parsing
+- **PyMuPDF for annotation** — Preserves original PDF layout; draws colored rectangles precisely using per-field bbox coordinates from parsing
 - **Background processing** — PDF pipeline takes 30-90s; async avoids request timeouts
 
 ## 8. Tech Stack
 
 - **Backend:** Python with `uv`, FastAPI
-- **Database:** Postgres with SQLAlchemy 2.x
 - **Frontend:** TypeScript, React, Vite
 - **State/Data:** React Query
 - **Styling/UI:** TailwindCSS, shadcn/ui
@@ -151,16 +159,14 @@ All calls go through Ciridae Gateway (`https://llm-gateway-5q22j.ondigitalocean.
 ├── backend/
 │   ├── app/
 │   │   ├── main.py              # FastAPI app + routes
-│   │   ├── models.py            # SQLAlchemy models
 │   │   ├── schemas.py           # Pydantic schemas
 │   │   ├── pipeline/
-│   │   │   ├── parse.py         # PDF extraction
+│   │   │   ├── parse.py         # PDF extraction (3-phase)
 │   │   │   ├── room_mapping.py  # LLM room mapping
 │   │   │   ├── matching.py      # Semantic matching + classification
 │   │   │   └── annotate.py      # PDF markup generation
-│   │   ├── llm.py               # Gateway client wrapper
-│   │   └── db.py                # DB session + engine
-│   ├── alembic/                 # Migrations
+│   │   └── llm.py               # Gateway client wrapper
+│   ├── test_parse.py            # CLI test script for parse pipeline
 │   └── pyproject.toml
 ├── frontend/
 │   ├── src/
@@ -172,5 +178,7 @@ All calls go through Ciridae Gateway (`https://llm-gateway-5q22j.ondigitalocean.
 │   │   └── api/                 # React Query hooks
 │   ├── package.json
 │   └── vite.config.ts
+├── documents/                   # Input PDFs (proposal sets)
+├── DESIGN.md
 └── README.md
 ```

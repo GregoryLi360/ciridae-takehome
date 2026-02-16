@@ -5,7 +5,7 @@ import fitz
 from pydantic import BaseModel
 
 from ..llm import vision_extract
-from ..schemas import ExtractedLineItem, ExtractedRoom, ParsedDocument
+from ..schemas import Bbox, ExtractedLineItem, ExtractedRoom, LineItemBboxes, ParsedDocument
 
 
 # --- LLM response models ---
@@ -70,17 +70,74 @@ def _render_page_b64(page: fitz.Page) -> str:
     return base64.b64encode(pix.tobytes("png")).decode()
 
 
-def _locate_bbox(page: fitz.Page, description: str) -> tuple[float, float, float, float] | None:
+def _search_text(page: fitz.Page, text: str) -> Bbox | None:
+    """Search for text on page and return its tight bounding box."""
+    results = page.search_for(text)
+    if results:
+        r = results[0]
+        return (r.x0, r.y0, r.x1, r.y1)
+    return None
+
+
+def _find_description_bbox(page: fitz.Page, description: str) -> Bbox | None:
+    """Find the description text, trying progressively shorter prefixes."""
     text = re.sub(r"^\d+\.\s*", "", description)
     for length in [60, 40, 25]:
         query = text[:length].strip()
         if len(query) < 5:
             continue
-        results = page.search_for(query)
-        if results:
-            r = results[0]
-            return (0, r.y0, page.rect.width, r.y1)
+        bbox = _search_text(page, query)
+        if bbox:
+            return bbox
     return None
+
+
+def _find_number_bbox(page: fitz.Page, value: float | None, desc_bbox: Bbox | None) -> Bbox | None:
+    """Find a numeric value on the same row as the description."""
+    if value is None or desc_bbox is None:
+        return None
+    # Try multiple formatting: with commas, without, integer form
+    candidates = []
+    candidates.append(f"{value:,.2f}")  # 1,734.96
+    candidates.append(f"{value:.2f}")   # 1734.96
+    if value == int(value):
+        candidates.append(f"{int(value):,}")  # 1,735
+        candidates.append(str(int(value)))     # 1735
+    y_mid = (desc_bbox[1] + desc_bbox[3]) / 2
+    tolerance = 15  # points vertical tolerance for same-row matching
+    for text in candidates:
+        results = page.search_for(text)
+        for r in results:
+            r_mid = (r.y0 + r.y1) / 2
+            if abs(r_mid - y_mid) < tolerance:
+                return (r.x0, r.y0, r.x1, r.y1)
+    return None
+
+
+def _find_unit_bbox(page: fitz.Page, unit: str | None, desc_bbox: Bbox | None) -> Bbox | None:
+    """Find the unit text on the same row as the description."""
+    if not unit or desc_bbox is None:
+        return None
+    y_mid = (desc_bbox[1] + desc_bbox[3]) / 2
+    tolerance = 15
+    results = page.search_for(unit)
+    for r in results:
+        r_mid = (r.y0 + r.y1) / 2
+        if abs(r_mid - y_mid) < tolerance:
+            return (r.x0, r.y0, r.x1, r.y1)
+    return None
+
+
+def _locate_bboxes(page: fitz.Page, item) -> LineItemBboxes:
+    """Locate per-field bounding boxes for a line item."""
+    desc_bbox = _find_description_bbox(page, item.description)
+    return LineItemBboxes(
+        description=desc_bbox,
+        quantity=_find_number_bbox(page, item.quantity, desc_bbox),
+        unit_price=_find_number_bbox(page, item.unit_price, desc_bbox),
+        total=_find_number_bbox(page, item.total, desc_bbox),
+        unit=_find_unit_bbox(page, item.unit, desc_bbox),
+    )
 
 
 # --- Main pipeline ---
@@ -112,14 +169,14 @@ def parse_document(pdf_path: str, source: str) -> ParsedDocument:
 
         page = doc[page_idx]
         for item in result.line_items:
-            bbox = _locate_bbox(page, item.description)
+            bboxes = _locate_bboxes(page, item)
             extracted = ExtractedLineItem(
                 description=item.description,
                 quantity=item.quantity,
                 unit=item.unit,
                 unit_price=item.unit_price,
                 total=item.total,
-                bbox=bbox,
+                bboxes=bboxes,
                 page_number=page_idx + 1,
             )
             room_name = item.room_name if item.room_name in rooms else rooms[0]

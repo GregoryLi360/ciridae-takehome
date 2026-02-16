@@ -7,11 +7,11 @@ load_dotenv()
 
 client = OpenAI(
     api_key=os.getenv("GATEWAY_API_KEY"),
-    base_url="https://llm-gateway-5q22j.ondigitalocean.app",
+    base_url="https://api.llmgateway.ciridae.app",
 )
 
 
-def vision_extract(image_b64: str, response_model: type, system_prompt: str, model: str = "claude-3-5-sonnet"):
+def vision_extract(image_b64: str, response_model: type, system_prompt: str, model: str = "claude-3-7-sonnet"):
     completion = client.chat.completions.parse(
         model=model,
         messages=[
