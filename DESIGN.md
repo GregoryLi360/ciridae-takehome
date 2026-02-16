@@ -134,7 +134,17 @@ All calls go through Ciridae Gateway (`https://llm-gateway-5q22j.ondigitalocean.
 - **PyMuPDF for annotation** — Preserves original PDF layout; draws colored rectangles and text annotations precisely using bbox coordinates from parsing
 - **Background processing** — PDF pipeline takes 30-90s; async avoids request timeouts
 
-## 8. Directory Structure
+## 8. Tech Stack
+
+- **Backend:** Python with `uv`, FastAPI
+- **Database:** Postgres with SQLAlchemy 2.x
+- **Frontend:** TypeScript, React, Vite
+- **State/Data:** React Query
+- **Styling/UI:** TailwindCSS, shadcn/ui
+- **Validation:** zod (frontend) / Pydantic (backend)
+- **LLM Calls:** Ciridae LLM Gateway (OpenAI-compatible API)
+
+## 9. Directory Structure
 
 ```
 ├── backend/
