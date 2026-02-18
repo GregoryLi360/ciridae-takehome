@@ -25,42 +25,13 @@ class _RoomMatches(BaseModel):
 
 
 MATCHING_PROMPT = """\
-You are comparing line items from two construction repair proposals for the same job.
+You are comparing line items from two construction repair proposals for the same room.
 Match items from the JDR (contractor) list to items from the Insurance list that refer to the same work.
 
 Rules:
-- Match items that describe the same type of work, even if wording differs significantly.
+- Match items that describe the same type of work, even if wording differs (e.g. "Bathtub - Reset" ↔ "Install Bathtub", "Carpet pad" ↔ "Carpet pad - per specs from independent pad analysis").
 - Each item can appear in at most one match. Do not double-match.
-- When two JDR items could match the same insurance item, prefer the one whose units/quantities \
-are more compatible (e.g. both in SF rather than LF vs SF).
-- Match items even when methodology or materials differ if they serve the same purpose:
-  - "Mortar bed for tile floors" ↔ "Floor leveling cement" (both floor prep for tile)
-  - "Concrete grinding" ↔ "Floor leveling cement" (both substrate preparation)
-  - "Tile tub surround - 60 to 75 SF" ↔ "Ceramic/porcelain tile (Tub Surround)"
-  - "Tandem axle dump trailer" ↔ "Haul debris - per pickup truck load" (both debris removal)
-  - "Content Manipulation (Bid Item)" ↔ "Contents - move out then reset" (both content handling)
-  - "Seal/prime (1 coat) then paint (2 coats)" ↔ "Paint the walls - one coat" (both wall painting)
-  - "Seal (1 coat) & paint (1 coat) baseboard" ↔ "Paint baseboard - one coat" (both baseboard painting)
-  - "R&R Carpet pad" ↔ "Carpet pad - per specs from independent pad analysis"
-- Match even if quantities or pricing differ substantially — classification handles that separately.
-- Only leave items unmatched if you cannot identify any corresponding work on the other side.
-- Return indices as 0-based integers referring to the numbered lists provided."""
-
-
-SECONDARY_MATCHING_PROMPT = """\
-You are reviewing unmatched JDR line items from a construction repair proposal.
-These items were not matched in a first pass. Some may partially overlap in scope with \
-insurance items that were already matched to other JDR items.
-
-For each unmatched JDR item, check if it describes work that partially overlaps with any \
-of the insurance items listed. A partial overlap means the insurance item covers some of \
-the same work but not all (e.g. "Door hinges (set of 3) and slab - Detach & reset" \
-partially overlaps "Interior door - Reset - slab only" because the door reset is covered \
-but the hinge work is not).
-
-Rules:
-- Only match when there is genuine scope overlap, not just same room/trade.
-- An insurance item CAN be matched multiple times here (this is a secondary pass).
+- Only match items you are confident refer to the same scope of work. Leave items unmatched if unsure.
 - Return indices as 0-based integers referring to the numbered lists provided."""
 
 
@@ -107,12 +78,10 @@ def _format_item_list(items: list[ExtractedLineItem]) -> str:
     return "\n".join(lines)
 
 
-def _match_items_llm(
+def _match_room_items(
     jdr_items: list[ExtractedLineItem],
     ins_items: list[ExtractedLineItem],
-    prompt: str = MATCHING_PROMPT,
 ) -> tuple[list[MatchedPair], list[ExtractedLineItem], list[ExtractedLineItem]]:
-    """Run LLM matching and return matched pairs + leftovers."""
     if not jdr_items or not ins_items:
         return [], list(jdr_items), list(ins_items)
 
@@ -120,7 +89,7 @@ def _match_items_llm(
         f"JDR items ({len(jdr_items)}):\n{_format_item_list(jdr_items)}\n\n"
         f"Insurance items ({len(ins_items)}):\n{_format_item_list(ins_items)}"
     )
-    result = chat(prompt, user_msg, _RoomMatches)
+    result = chat(MATCHING_PROMPT, user_msg, _RoomMatches)
 
     matched_pairs: list[MatchedPair] = []
     matched_jdr_idx: set[int] = set()
@@ -157,9 +126,6 @@ def compare_documents(jdr: ParsedDocument, ins: ParsedDocument) -> ComparisonRes
     jdr_rooms = {r.room_name: r for r in jdr.rooms}
     ins_rooms = {r.room_name: r for r in ins.rooms}
 
-    # Track rooms with no insurance counterpart for global fallback
-    orphan_jdr_items: list[ExtractedLineItem] = []
-
     comparisons: list[RoomComparison] = []
     for group in room_groups:
         group_jdr_items: list[ExtractedLineItem] = []
@@ -172,21 +138,7 @@ def compare_documents(jdr: ParsedDocument, ins: ParsedDocument) -> ComparisonRes
             if rn in ins_rooms:
                 group_ins_items.extend(ins_rooms[rn].line_items)
 
-        # If no insurance counterpart, defer items to global fallback
-        if group_jdr_items and not group_ins_items:
-            orphan_jdr_items.extend(group_jdr_items)
-            comparisons.append(RoomComparison(
-                jdr_rooms=group.jdr_rooms,
-                ins_rooms=group.ins_rooms,
-                matched=[],
-                unmatched_jdr=group_jdr_items,
-                unmatched_ins=[],
-            ))
-            continue
-
-        matched, unmatched_jdr, unmatched_ins = _match_items_llm(
-            group_jdr_items, group_ins_items,
-        )
+        matched, unmatched_jdr, unmatched_ins = _match_room_items(group_jdr_items, group_ins_items)
 
         comparisons.append(RoomComparison(
             jdr_rooms=group.jdr_rooms,
@@ -195,39 +147,5 @@ def compare_documents(jdr: ParsedDocument, ins: ParsedDocument) -> ComparisonRes
             unmatched_jdr=unmatched_jdr,
             unmatched_ins=unmatched_ins,
         ))
-
-    # ── Phase 2: Global fallback for orphan rooms only ──
-    # Only items from JDR rooms with NO insurance counterpart get a second
-    # chance to match against all remaining unmatched insurance items.
-    if orphan_jdr_items:
-        all_unmatched_ins: list[ExtractedLineItem] = []
-        for comp in comparisons:
-            all_unmatched_ins.extend(comp.unmatched_ins)
-
-        if all_unmatched_ins:
-            global_matched, still_unmatched_jdr, still_unmatched_ins = _match_items_llm(
-                orphan_jdr_items, all_unmatched_ins,
-            )
-            if global_matched:
-                newly_matched_jdr = {id(p.jdr_item) for p in global_matched}
-                newly_matched_ins = {id(p.ins_item) for p in global_matched}
-
-                # Remove newly matched items from their original room comparisons
-                for comp in comparisons:
-                    comp.unmatched_jdr = [
-                        it for it in comp.unmatched_jdr if id(it) not in newly_matched_jdr
-                    ]
-                    comp.unmatched_ins = [
-                        it for it in comp.unmatched_ins if id(it) not in newly_matched_ins
-                    ]
-
-                # Add global matches to a cross-room comparison group
-                comparisons.append(RoomComparison(
-                    jdr_rooms=["(cross-room)"],
-                    ins_rooms=["(cross-room)"],
-                    matched=global_matched,
-                    unmatched_jdr=[],
-                    unmatched_ins=[],
-                ))
 
     return ComparisonResult(rooms=comparisons)

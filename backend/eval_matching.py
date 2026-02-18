@@ -47,23 +47,16 @@ def parse_ground_truth(path: str) -> dict[int, str]:
     return items
 
 
-def parse_gt_descriptions(path: str) -> dict[int, tuple[str, int]]:
-    """Returns {item_num: (description, page_number)}."""
+def parse_gt_descriptions(path: str) -> dict[int, str]:
     content = Path(path).read_text()
-    descs: dict[int, tuple[str, int]] = {}
+    descs: dict[int, str] = {}
     color = None
-    current_page = 0
     for line in content.splitlines():
         m = re.match(r"COLOR:\s+(\w+)", line)
         if m:
             color = m.group(1)
             continue
         if color not in ("green", "orange", "sky_blue"):
-            continue
-        # Extract page number from lines like "  [  8] Page  4 | Highlight"
-        pm = re.match(r"\s*\[\s*\d+\]\s*Page\s+(\d+)", line)
-        if pm:
-            current_page = int(pm.group(1))
             continue
         if "Text:" not in line:
             continue
@@ -79,7 +72,7 @@ def parse_gt_descriptions(path: str) -> dict[int, tuple[str, int]]:
             desc = re.sub(r"\b(tesolC|moordeB)\b", "", desc).strip()
             desc = re.sub(r"\s+", " ", desc)
             if desc:
-                descs[n] = (desc, current_page)
+                descs[n] = desc
     return descs
 
 
@@ -181,43 +174,37 @@ def stage_eval():
     log(f"  {len(gt)} items: green={counts.get('green',0)}, "
         f"orange={counts.get('orange',0)}, sky_blue={counts.get('sky_blue',0)}")
 
-    # Collect pipeline JDR items: (description, color, room_label, page_number)
-    pipe_items: list[tuple[str, str, str, int]] = []
+    # Collect pipeline JDR items
+    pipe_items: list[tuple[str, str, str]] = []
     for room in result.rooms:
         label = "/".join(room.jdr_rooms)
         for pair in room.matched:
-            pipe_items.append((pair.jdr_item.description, pair.color.value, label, pair.jdr_item.page_number))
+            pipe_items.append((pair.jdr_item.description, pair.color.value, label))
         for item in room.unmatched_jdr:
-            pipe_items.append((item.description, "blue", label, item.page_number))
+            pipe_items.append((item.description, "blue", label))
 
     log(f"  Pipeline JDR items: {len(pipe_items)}")
 
-    # Match GT items to pipeline items by description similarity + page number
+    # Match GT items to pipeline items by description similarity
     records = []
     used: set[int] = set()
 
     for item_num in sorted(gt.keys()):
         gt_color = gt[item_num]
-        gt_entry = gt_descs.get(item_num)
-        gt_desc = gt_entry[0] if gt_entry else ""
-        gt_page = gt_entry[1] if gt_entry else 0
+        gt_desc = gt_descs.get(item_num, "")
 
         best_i = None
         best_score = 0.0
-        for i, (desc, _, _, page) in enumerate(pipe_items):
+        for i, (desc, _, _) in enumerate(pipe_items):
             if i in used:
                 continue
-            sim = SequenceMatcher(None, _clean(gt_desc), _clean(desc)).ratio()
-            # Boost score when page numbers match (helps disambiguate
-            # identical descriptions across different rooms)
-            page_bonus = 0.1 if (gt_page and page and gt_page == page) else 0.0
-            score = sim + page_bonus
+            score = SequenceMatcher(None, _clean(gt_desc), _clean(desc)).ratio()
             if score > best_score:
                 best_score = score
                 best_i = i
 
         if best_i is not None and best_score > 0.4:
-            desc, pipe_color, room, _ = pipe_items[best_i]
+            desc, pipe_color, room = pipe_items[best_i]
             used.add(best_i)
             pipe_norm = "sky_blue" if pipe_color == "blue" else pipe_color
             records.append({
@@ -262,7 +249,7 @@ def stage_eval():
     unmatched_pipe = [pipe_items[i] for i in range(len(pipe_items)) if i not in used]
     if unmatched_pipe:
         log(f"\n  Pipeline items not in GT ({len(unmatched_pipe)}):")
-        for desc, color, room, _page in unmatched_pipe:
+        for desc, color, room in unmatched_pipe:
             log(f"    [{color:8}] {room:20s} {desc[:55]}")
 
 
