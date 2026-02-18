@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 import fitz
 from pydantic import BaseModel
 
-from ..llm import vision_extract
+from ..llm import chat, vision_extract
 from ..schemas import Bbox, ExtractedLineItem, ExtractedRoom, LineItemBboxes, ParsedDocument
 
 _LLM_POOL = ThreadPoolExecutor(max_workers=8)
@@ -246,19 +246,23 @@ def parse_document(pdf_path: str, source: str) -> ParsedDocument:
     doc = fitz.open(pdf_path)
     total_pages = len(doc)
 
-    # Phase 1: Pre-render all pages (sequential — fitz not thread-safe)
-    page_images = [_render_page_b64(doc[i]) for i in range(total_pages)]
+    # Phase 1: Extract page text (PyMuPDF, fast) and room-split (text LLM)
+    page_texts = [doc[i].get_text() for i in range(total_pages)]
 
-    # Phase 2: Room-split (parallel LLM calls)
     def _room_split(page_idx: int) -> list[str]:
+        text = page_texts[page_idx].strip()
+        if not text or len(text) < 30:
+            return []
         print(f"    [{source}] room-split page {page_idx+1}/{total_pages}", flush=True)
-        result = vision_extract(page_images[page_idx], _PageRooms, ROOM_SPLIT_PROMPT)
+        result = chat(ROOM_SPLIT_PROMPT, text, _PageRooms)
         return [r.room_name for r in result.rooms]
 
     page_rooms = list(_LLM_POOL.map(_room_split, range(total_pages)))
 
-    # Phase 3: Extract line items (parallel LLM calls, then sequential bbox location)
+    # Phase 2: Render content pages and extract line items (vision LLM)
     content_pages = [i for i, r in enumerate(page_rooms) if r]
+    # Only render pages that need extraction (sequential — fitz not thread-safe)
+    page_images: dict[int, str] = {i: _render_page_b64(doc[i]) for i in content_pages}
 
     def _extract(page_idx: int) -> tuple[int, list[str], _LLMPageItems]:
         rooms = page_rooms[page_idx]

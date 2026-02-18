@@ -198,14 +198,16 @@ def _last_jdr_page(room: RoomComparison) -> int | None:
 def _add_nugget_notes(
     page: fitz.Page,
     items: list[ExtractedLineItem],
+    room_name: str | None = None,
 ) -> None:
     """Place sticky-note annotations for insurance-only items at the page bottom-right."""
     x = page.rect.width - 40
     y = page.rect.height - 50
+    room_prefix = f"[{room_name}] " if room_name else ""
     for item in reversed(items):
         total_str = f"${float(item.total):,.2f}" if item.total else "—"
         qty_str = f"{item.quantity} {item.unit or ''}" if item.quantity else ""
-        text = f"[Insurance only] {item.description}"
+        text = f"{room_prefix}[Insurance only] {item.description}"
         if qty_str:
             text += f"\nQty: {qty_str}"
         text += f"\nTotal: {total_str}"
@@ -252,7 +254,7 @@ def annotate_pdf(
             # Room has only insurance items — place nugget notes on the
             # first page as a fallback (rare with 1:1 mapping).
             if room.unmatched_ins:
-                _add_nugget_notes(doc[0], room.unmatched_ins)
+                _add_nugget_notes(doc[0], room.unmatched_ins, room.ins_room or room.jdr_room)
             continue
 
         comments = comments_by_idx.get(room_idx, [])
@@ -277,7 +279,7 @@ def annotate_pdf(
         if room.unmatched_ins:
             page_idx = _last_jdr_page(room)
             if page_idx is not None and 0 <= page_idx < len(doc):
-                _add_nugget_notes(doc[page_idx], room.unmatched_ins)
+                _add_nugget_notes(doc[page_idx], room.unmatched_ins, room.ins_room or room.jdr_room)
 
     doc.save(output_path)
     doc.close()

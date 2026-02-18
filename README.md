@@ -31,7 +31,7 @@ GATEWAY_API_KEY=your_key_here
 
 ```
 React/Vite Frontend  ──▶  FastAPI Backend
-                          ├── PDF Parse (LLM vision + PyMuPDF)
+                          ├── PDF Parse (LLM text + vision + PyMuPDF)
                           ├── Room Mapping (LLM)
                           ├── Line-Item Matching (LLM)
                           ├── Classification (deterministic)
@@ -44,12 +44,12 @@ React/Vite Frontend  ──▶  FastAPI Backend
 
 ### Step 1 — PDF Parsing (`parse.py`)
 
-Three-phase hybrid approach:
+Two-phase hybrid approach:
 
-1. **Room splitting** — Each page is rendered at 200 DPI and sent to `claude-3-7-sonnet` to identify room sections (e.g. "Bathroom", "Garage"). Handles continuations across pages and filters out photo/summary pages.
-2. **Line item extraction** — Pages with rooms are sent to the same vision model with the known room list as context. Extracts description, quantity, unit, unit_price, total, and room assignment via structured Pydantic output.
-3. **Bbox location** — For JDR items, uses PyMuPDF's `get_text("words")` to locate each field's bounding box on the page:
-   - **Description** — Word-level matching: splits the LLM-extracted description into words and finds the best matching word sequence on the page, returning the union bbox of all matched words. Handles multi-line descriptions, curly quotes, and truncated words. Falls back to `search_for` with progressively shorter prefixes.
+1. **Room splitting** — PyMuPDF extracts page text, then a fast text-only LLM call (`fast-production`) identifies room sections (e.g. "Bathroom", "Garage"). Handles continuations across pages and filters out photo/summary pages. No vision call needed.
+2. **Line item extraction** — Content pages (those with rooms) are rendered at 200 DPI and sent to `claude-3-7-sonnet` with the known room list as context. Extracts description, quantity, unit, unit_price, total, and room assignment via structured Pydantic output.
+3. **Bbox location** — For JDR items, uses PyMuPDF's `get_text("words")` to locate each field's bounding box on the page. Tracks claimed bboxes per page to prevent duplicate highlights:
+   - **Description** — Word-level matching: splits the LLM-extracted description into words and finds the best matching word sequence on the page, skipping already-claimed regions. Falls back to `search_for` with progressively shorter prefixes.
    - **Quantity, unit_price, total** — Number search with comma formatting variants, constrained to the same row (±15pt vertical tolerance from the description bbox).
    - **Unit** — Text search constrained to the same row.
 
@@ -59,7 +59,7 @@ Single LLM call (`fast-production`) with both room name lists. Pairs rooms 1:1 t
 
 ### Step 3 — Line-Item Matching (`matching.py`)
 
-Per mapped room group, an LLM call matches JDR items to insurance items by semantic similarity of descriptions. Each item can appear in at most one match.
+Per mapped room pair, an LLM call matches JDR items to insurance items by semantic similarity of descriptions. Each item can appear in at most one match.
 
 **Classification** is deterministic code:
 - **Green** — All fields match: unit (exact), quantity (±2%), unit_price (±2%)
@@ -75,7 +75,7 @@ Per mapped room group, an LLM call matches JDR items to insurance items by seman
 - Draws colored highlight annotations over each line item's description using the per-field bboxes from Step 1
 - Multi-line descriptions are split into per-line rects using `get_text("dict")` line boundaries for proper highlight rendering
 - **LLM-generated sticky notes**: One LLM call per room generates concise rationale comments (1-3 sentences each) explaining the match result, referencing specific quantities, prices, and insurance items
-- Appends summary pages listing insurance-only (nugget) items grouped by room
+- **Nugget annotations**: Insurance-only items are placed as sticky notes (no highlights) at the bottom of each room's last JDR page
 
 **Highlight colors:**
 | Color | Meaning | RGB |
@@ -83,13 +83,12 @@ Per mapped room group, an LLM call matches JDR items to insurance items by seman
 | Green | Exact match | `(0, 1, 0)` |
 | Orange | Matched with differences | `(1, 0.5, 0)` |
 | Blue | JDR only, no insurance match | `(0.5, 0.8, 1)` |
-| Purple | Insurance only (summary pages) | `(0.75, 0.52, 1)` |
 
 ## Tech Stack
 
 **Backend:** Python 3.13, FastAPI, PyMuPDF, Pydantic, OpenAI SDK, uv
 
-**Frontend:** TypeScript, React 19, Vite, TailwindCSS, shadcn/ui, React Query, Zod
+**Frontend:** TypeScript, React 19, Vite, TailwindCSS, shadcn/ui, React Query
 
 ## Directory Structure
 
@@ -99,7 +98,7 @@ Per mapped room group, an LLM call matches JDR items to insurance items by seman
 │   │   ├── schemas.py              # Pydantic data models
 │   │   ├── llm.py                  # Gateway client (chat + vision)
 │   │   └── pipeline/
-│   │       ├── parse.py            # PDF extraction (3-phase)
+│   │       ├── parse.py            # PDF extraction (2-phase)
 │   │       ├── room_mapping.py     # LLM room mapping
 │   │       ├── matching.py         # Semantic matching + classification
 │   │       └── annotate.py         # PDF markup generation
@@ -109,7 +108,7 @@ Per mapped room group, an LLM call matches JDR items to insurance items by seman
 ├── frontend/
 │   └── src/
 │       ├── App.tsx                 # Root component with state machine
-│       ├── api/                    # React Query hooks + Zod schemas
+│       ├── api/                    # React Query hooks + TS types
 │       └── components/
 │           ├── UploadForm.tsx      # Dual PDF dropzone
 │           ├── JobStatus.tsx       # Processing stage indicator
