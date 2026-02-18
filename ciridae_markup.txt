@@ -1,0 +1,1325 @@
+==========================================================================================
+PDF HIGHLIGHT EXTRACTION REPORT
+Source: ciridae_markup_proposal.pdf
+==========================================================================================
+
+Total annotations: 368
+Distinct colors: 5
+
+  green (#00ff00): 22 items
+  orange (#ff7f00): 72 items
+  sky_blue (#7fccff): 86 items
+  warm_yellow (#ffcc00): 13 items
+  yellow (#ffff00): 175 items
+
+==========================================================================================
+COLOR: green (#00ff00)  |  Count: 22
+==========================================================================================
+
+  [  1] Page  4 | Highlight
+        Text: 30. Door opening (jamb & casing) - 32"to36"wide - paint grade
+
+  [  2] Page  4 | Highlight
+        Text: 34. Interior door - Reset - slab only
+
+  [  3] Page  4 | Highlight
+        Text: 35. Paint door slab only - 2 coats (per side)
+
+  [  4] Page  5 | Highlight
+        Text: 58. 1/2" - drywall per LF - up to 2' tall
+
+  [  5] Page  6 | Highlight
+        Text: 69. Door opening (jamb & casing) - 32"to36"wide - paint grade
+
+  [  6] Page  6 | Highlight
+        Text: 73. Interior door - Reset - slab only
+
+  [  7] Page  6 | Highlight
+        Text: 74. Paint door slab only - 2 coats (per side)
+
+  [  8] Page  6 | Highlight
+        Text: 80. Final cleaning - construction - Residential
+
+  [  9] Page  7 | Highlight
+        Text: 85. Baseboard - 3 1/4"
+
+  [ 10] Page  7 | Highlight
+        Text: 87. Door opening (jamb & casing) - 32"to36"wide - paint grade
+
+  [ 11] Page  7 | Highlight
+        Text: 92. Paint door slab only - 2 coats (per side)
+
+  [ 12] Page  8 | Highlight
+        Text: 103. Paint door/window trim & jamb - 2 coats (per side)
+
+  [ 13] Page  9 | Highlight
+        Text: 116. Door opening (jamb & casing) 32"to36"wide - paint grade 117. Seal & paint door/window trim jamb - (per side)
+
+  [ 14] Page 11 | Highlight
+        Text: 136. Door opening (jamb & casing) - 32"to36"wide - paint grade
+
+  [ 15] Page 11 | Highlight
+        Text: 139. On site door prep. for full mortised hinges - Labor only
+
+  [ 16] Page 11 | Highlight
+        Text: 140. Interior door - Reset - slab only
+
+  [ 17] Page 11 | Highlight
+        Text: 141. Paint door slab only - 2 coats (per side)
+
+  [ 18] Page 11 | Highlight
+        Text: 146. Remove Carpet pad
+
+  [ 19] Page 12 | Highlight
+        Text: 152. Remove Carpet Hallway Hallway
+
+  [ 20] Page 14 | Highlight
+        Text: 173. Remove Carpet
+
+  [ 21] Page 14 | Highlight
+        Text: 177. Insulation labor minimum
+
+  [ 22] Page 14 | Highlight
+        Text: 178. Cabinetry labor minimum
+
+==========================================================================================
+COLOR: orange (#ff7f00)  |  Count: 72
+==========================================================================================
+
+  [  1] Page  2 | Highlight
+        Text: 6. Batt insulation replacement per LF - 4" - up to 2' tall
+
+  [  2] Page  3 | Highlight
+        Text: 7. 1/2" - drywall per LF - up to 2' tall
+
+  [  3] Page  3 | Highlight
+        Text: 10. Texture drywall - light hand texture
+
+  [  4] Page  3 | Highlight
+        Text: 11. Seal/prime (1 coat) then paint (2 coats) the walls
+
+  [  5] Page  3 | Highlight
+        Text: 12. Vanity
+
+  [  6] Page  3 | Highlight
+        Text: 24. Mortar bed for tile floors
+
+  [  7] Page  4 | Highlight
+        Text: 25. Tile floor covering
+
+  [  8] Page  4 | Highlight
+        Text: 27. Baseboard - 3 1/4"
+
+  [  9] Page  4 | Highlight
+        Text: 31. Seal & paint door/window trim & jamb - (per side)
+
+  [ 10] Page  4 | Highlight
+        Text: 32. Door hinges (set of 3) and slab - Detach & reset
+
+  [ 11] Page  4 | Highlight
+        Text: 38. Toilet - Reset
+
+  [ 12] Page  4 | Highlight
+        Text: 41. Batt insulation - 4" - R15 - paper / foil faced
+
+  [ 13] Page  4 | Highlight
+        Text: 44. Bathtub - Reset
+
+  [ 14] Page  4 | Highlight
+        Text: 45. Tile tub surround - 60 to 75 SF
+
+  [ 15] Page  5 | Highlight
+        Text: 56. Final cleaning - construction - Bedroom Bedroom Residential
+
+  [ 16] Page  5 | Highlight
+        Text: Garage Garage 59. Texture drywall - light hand texture
+
+  [ 17] Page  5 | Highlight
+        Text: 60. Seal/prime (1 coat) then paint (2 coats) the walls
+
+  [ 18] Page  5 | Highlight
+        Text: 61. Concrete grinding
+
+  [ 19] Page  6 | Highlight
+        Text: 64. Tile floor covering
+
+  [ 20] Page  6 | Highlight
+        Text: 66. Baseboard - 3 1/4"
+
+  [ 21] Page  6 | Highlight
+        Text: 67. Seal (1 coat) & paint (1 coat) baseboard
+
+  [ 22] Page  6 | Highlight
+        Text: 70. Seal & paint door/window trim & jamb - (per side)
+
+  [ 23] Page  6 | Highlight
+        Text: 77. Washer/Washing machine - Remove & reset
+
+  [ 24] Page  6 | Highlight
+        Text: 78. Dryer - Remove & reset
+
+  [ 25] Page  7 | Highlight
+        Text: 81. Batt insulation replacement per LF - 4" - up to 2' tall
+
+  [ 26] Page  7 | Highlight
+        Text: 82. 1/2" - drywall per LF - up to 2' tall
+
+  [ 27] Page  7 | Highlight
+        Text: 83. Texture drywall - light hand texture
+
+  [ 28] Page  7 | Highlight
+        Text: 84. Seal/prime (1 coat) then paint (2 coats) the walls
+
+  [ 29] Page  7 | Highlight
+        Text: 86. Seal (1 coat) & paint (1 coat) baseboard
+
+  [ 30] Page  7 | Highlight
+        Text: 88. Seal & paint door/window trim & jamb - (per side)
+
+  [ 31] Page  7 | Highlight
+        Text: 89. Door hinges (set of 3) and slab - Detach & reset
+
+  [ 32] Page  7 | Highlight
+        Text: 91. Interior door - Reset - slab only
+
+  [ 33] Page  7 | Highlight
+        Text: 95. Content Manipulation charge - per hour
+
+  [ 34] Page  8 | Highlight
+        Text: 97. 1/2" - drywall per LF - up to 2' tall
+
+  [ 35] Page  8 | Highlight
+        Text: 98. Texture drywall - light hand texture
+
+  [ 36] Page  8 | Highlight
+        Text: 99. Seal/prime (1 coat) then paint (2 Garage Garage coats) the walls
+
+  [ 37] Page  8 | Highlight
+        Text: 101. Baseboard - 3 1/4"
+
+  [ 38] Page  8 | Highlight
+        Text: 102. Seal (1 coat) & paint (1 coat) baseboard
+
+  [ 39] Page  8 | Highlight
+        Text: 104. Carpet pad
+
+  [ 40] Page  8 | Highlight
+        Text: 105. Carpet
+
+  [ 41] Page  9 | Highlight
+        Text: 108. Remove Carpet
+
+  [ 42] Page  9 | Highlight
+        Text: 109. Carpet
+
+  [ 43] Page  9 | Highlight
+        Text: 115. Seal (1 coat) & paint (1 coat) baseboard
+
+  [ 44] Page  9 | Highlight
+        Text: 116. Door opening (jamb & casing) - 1.00 EA 0.00 179.14 10.40 37.90 227.44 32"to36"wide - paint grade 117. Seal & paint door/window trim & 2.00 EA 0.00 43.19 0.92 17.46 104.76 jamb - (per side)
+
+  [ 45] Page 10 | Highlight
+        Text: 120. Interior door - Reset - slab only
+
+  [ 46] Page 10 | Highlight
+        Text: 121. Paint door slab only - 2 coats (per side)
+
+  [ 47] Page 10 | Highlight
+        Text: 124. Carpet pad
+
+  [ 48] Page 10 | Highlight
+        Text: 125. Carpet
+
+  [ 49] Page 10 | Highlight
+        Text: 126. Content Manipulation charge - per hour
+
+  [ 50] Page 10 | Highlight
+        Text: Laundry Laundry Room Room 128. Batt insulation replacement per LF - 4" - up to 2' tall
+
+  [ 51] Page 10 | Highlight
+        Text: 129. 1/2" - drywall per LF - up to 2' tall
+
+  [ 52] Page 10 | Highlight
+        Text: 130. Seal/prime (1 coat) then paint (2 coats) the walls
+
+  [ 53] Page 10 | Highlight
+        Text: 132. Baseboard - 3 1/4"
+
+  [ 54] Page 10 | Highlight
+        Text: 133. Seal (1 coat) & paint (1 coat) baseboard
+
+  [ 55] Page 11 | Highlight
+        Text: 135. Paint door/window trim & jamb - Large - 2 coats (per side)
+
+  [ 56] Page 11 | Highlight
+        Text: 137. Seal & paint door/window trim & jamb - (per side)
+
+  [ 57] Page 11 | Highlight
+        Text: 138. Door hinges (set of 3) and slab - Detach & reset
+
+  [ 58] Page 11 | Highlight
+        Text: 145. Remove Carpet
+
+  [ 59] Page 11 | Highlight
+        Text: 147. Carpet pad
+
+  [ 60] Page 11 | Highlight
+        Text: 148. Carpet
+
+  [ 61] Page 12 | Highlight
+        Text: 153. Carpet
+
+  [ 62] Page 12 | Highlight
+        Text: 156. Seal/prime (1 coat) then paint (2 coats) the walls
+
+  [ 63] Page 12 | Highlight
+        Text: 158. Seal (1 coat) & paint (1 coat) baseboard
+
+  [ 64] Page 13 | Highlight
+        Text: 162. R&R Carpet pad
+
+  [ 65] Page 13 | Highlight
+        Text: 163. Remove Carpet
+
+  [ 66] Page 13 | Highlight
+        Text: 164. Carpet
+
+  [ 67] Page 13 | Highlight
+        Text: 165. Content Manipulation charge - per hour
+
+  [ 68] Page 13 | Highlight
+        Text: 166. Content Manipulation (Bid Item)
+
+  [ 69] Page 13 | Highlight
+        Text: 169. Remove Carpet
+
+  [ 70] Page 14 | Highlight
+        Text: 174. Carpet
+
+  [ 71] Page 14 | Highlight
+        Text: 175. Content Manipulation charge - per hour
+
+  [ 72] Page 14 | Highlight
+        Text: 176. Tandem axle dump trailer - per load - including dump fees
+
+==========================================================================================
+COLOR: sky_blue (#7fccff)  |  Count: 86
+==========================================================================================
+
+  [  1] Page  2 | Highlight
+        Text: 1. Residential Supervision / Project Management - per hour
+
+  [  2] Page  2 | Highlight
+        Text: 2. Megohmmeter check electrical circuits - average residence
+
+  [  3] Page  2 | Highlight
+        Text: 3. Respirator - Half face - multi- purpose resp. (per day)
+
+  [  4] Page  2 | Highlight
+        Text: 4. Respirator cartridge - HEPA only (per pair)
+
+  [  5] Page  2 | Highlight
+        Text: tesolC tesolC 5. Add for HEPA filter (for 1 1 moordeB moordeB canister/backpack vacuums)
+
+  [  6] Page  3 | Highlight
+        Text: 8. R&R 1/2" drywall - hung, taped, floated, ready for paint
+
+  [  7] Page  3 | Highlight
+        Text: 9. R&R Drywall window return - up to 6"
+
+  [  8] Page  3 | Highlight
+        Text: 13. Seal & paint vanity - inside and out
+
+  [  9] Page  3 | Highlight
+        Text: 14. Vanity top - one sink - cultured marble
+
+  [ 10] Page  3 | Highlight
+        Text: 15. Backsplash - solid surface - Unattached
+
+  [ 11] Page  3 | Highlight
+        Text: 16. Sink - single - Reset
+
+  [ 12] Page  3 | Highlight
+        Text: 17. Sink faucet - Reset
+
+  [ 13] Page  3 | Highlight
+        Text: 18. P-trap assembly - ABS (plastic)
+
+  [ 14] Page  3 | Highlight
+        Text: 19. Plumbing fixture supply line
+
+  [ 15] Page  3 | Highlight
+        Text: 20. Angle stop valve
+
+  [ 16] Page  3 | Highlight
+        Text: 21. Detach & Reset Mirror - framed
+
+  [ 17] Page  3 | Highlight
+        Text: 22. Concrete grinding
+
+  [ 18] Page  3 | Highlight
+        Text: 23. HEPA Vacuuming - Light - (PER SF)
+
+  [ 19] Page  4 | Highlight
+        Text: 26. Grout sealer
+
+  [ 20] Page  4 | Highlight
+        Text: 28. Seal (1 coat) & paint (1 coat) baseboard
+
+  [ 21] Page  4 | Highlight
+        Text: 29. Door stop - wall or floor mounted
+
+  [ 22] Page  4 | Highlight
+        Text: 33. On site door prep. for full mortised hinges - Labor only
+
+  [ 23] Page  4 | Highlight
+        Text: 36. Mask wall - plastic, paper, tape (per LF)
+
+  [ 24] Page  4 | Highlight
+        Text: 37. Floor protection - plastic and tape - 10 mil
+
+  [ 25] Page  4 | Highlight
+        Text: 39. Plumbing fixture supply line
+
+  [ 26] Page  4 | Highlight
+        Text: 40. Angle stop valve
+
+  [ 27] Page  4 | Highlight
+        Text: 42. 1/2" Cement board
+
+  [ 28] Page  4 | Highlight
+        Text: 43. Waterproof membrane - poly - tile underlayment
+
+  [ 29] Page  4 | Highlight
+        Text: 46. Tile - soap dish
+
+  [ 30] Page  4 | Highlight
+        Text: 47. Seal grout on tile wall
+
+  [ 31] Page  4 | Highlight
+        Text: 48. Tile - towel bar
+
+  [ 32] Page  4 | Highlight
+        Text: 49. R&R Window sill - tile on 2" x 4" wall
+
+  [ 33] Page  4 | Highlight
+        Text: 50. Tub/shower faucet - Detach & reset
+
+  [ 34] Page  5 | Highlight
+        Text: 51. Detach & Reset Towel bar
+
+  [ 35] Page  5 | Highlight
+        Text: 52. Towel ring - Detach & reset
+
+  [ 36] Page  5 | Highlight
+        Text: 53. Toilet paper holder - Detach & reset
+
+  [ 37] Page  5 | Highlight
+        Text: tesolC tesolC 54. Detach & Reset Light bar - 4 lights 1 1
+
+  [ 38] Page  5 | Highlight
+        Text: moordeB moordeB 55. Content Manipulation charge - per hour
+
+  [ 39] Page  5 | Highlight
+        Text: 57. Batt insulation replacement per LF - 4" - up to 2' tall
+
+  [ 40] Page  5 | Highlight
+        Text: 62. HEPA Vacuuming - Light - (PER SF)
+
+  [ 41] Page  6 | Highlight
+        Text: 63. Mortar bed for tile floors
+
+  [ 42] Page  6 | Highlight
+        Text: 65. Grout sealer
+
+  [ 43] Page  6 | Highlight
+        Text: 68. Door stop - wall or floor mounted
+
+  [ 44] Page  6 | Highlight
+        Text: 71. Door hinges (set of 3) and slab - Detach & reset
+
+  [ 45] Page  6 | Highlight
+        Text: 72. On site door prep. for full mortised hinges - Labor only
+
+  [ 46] Page  6 | Highlight
+        Text: 75. Mask wall - plastic, paper, tape (per LF)
+
+  [ 47] Page  6 | Highlight
+        Text: 76. Floor protection - plastic and tape - 10 mil
+
+  [ 48] Page  6 | Highlight
+        Text: 79. Content Manipulation charge - per hour
+
+  [ 49] Page  7 | Highlight
+        Text: 90. On site door prep. for full mortised hinges - Labor only
+
+  [ 50] Page  7 | Highlight
+        Text: 93. Mask wall - plastic, paper, tape (per LF)
+
+  [ 51] Page  7 | Highlight
+        Text: 94. Floor protection - plastic and tape - 10 mil
+
+  [ 52] Page  7 | Highlight
+        Text: 96. Final cleaning - construction - Residential
+
+  [ 53] Page  8 | Highlight
+        Text: 100. Cold air return cover - Detach & reset
+
+  [ 54] Page  8 | Highlight
+        Text: 106. Final cleaning - construction - tesolC tesolC Residential
+
+  [ 55] Page  8 | Highlight
+        Text: Hallway Hallway 107. R&R Carpet pad
+
+  [ 56] Page  9 | Highlight
+        Text: 110. Content Manipulation charge - Living Living Room Room per hour
+
+  [ 57] Page  9 | Highlight
+        Text: 111. 1/2" - tall
+
+  [ 58] Page  9 | Highlight
+        Text: 112. Texture drywall - light hand texture
+
+  [ 59] Page  9 | Highlight
+        Text: 113. Seal/prime (1 coat) then paint (2 coats) the walls
+
+  [ 60] Page  9 | Highlight
+        Text: 114. Baseboard - 3 1/4"
+
+  [ 61] Page 10 | Highlight
+        Text: 118. Door hinges (set of 3) and slab - Detach & reset
+
+  [ 62] Page 10 | Highlight
+        Text: 119. On site door prep. for full mortised hinges - Labor only
+
+  [ 63] Page 10 | Highlight
+        Text: 122. Mask wall - plastic, paper, tape (per LF)
+
+  [ 64] Page 10 | Highlight
+        Text: 123. Floor protection - plastic and tape - 10 mil
+
+  [ 65] Page 10 | Highlight
+        Text: 127. Final cleaning - construction - Residential
+
+  [ 66] Page 10 | Highlight
+        Text: Garage Garage 131. Outlet or switch cover
+
+  [ 67] Page 10 | Highlight
+        Text: 134. Door stop - wall or floor mounted
+
+  [ 68] Page 11 | Highlight
+        Text: 142. Mask wall - plastic, paper, tape (per LF)
+
+  [ 69] Page 11 | Highlight
+        Text: 143. Floor protection - plastic and tape - 10 mil
+
+  [ 70] Page 11 | Highlight
+        Text: 144. Cold air return cover - Detach & reset
+
+  [ 71] Page 11 | Highlight
+        Text: 149. Content Manipulation charge - per hour
+
+  [ 72] Page 11 | Highlight
+        Text: 150. Final cleaning - construction - Residential
+
+  [ 73] Page 12 | Highlight
+        Text: 151. R&R Carpet pad
+
+  [ 74] Page 12 | Highlight
+        Text: Laundry Laundry Room Room 154. Content Manipulation charge - per hour
+
+  [ 75] Page 12 | Highlight
+        Text: 155. 1/2" - drywall per LF - up to 2' tall
+
+  [ 76] Page 12 | Highlight
+        Text: 157. Baseboard - 3 1/4"
+
+  [ 77] Page 12 | Highlight
+        Text: 159. Mask wall - plastic, paper, tape (per LF)
+
+  [ 78] Page 13 | Highlight
+        Text: 160. Floor protection - plastic and tape - 10 mil
+
+  [ 79] Page 13 | Highlight
+        Text: 161. Window drapery - hardware - Detach & reset
+
+  [ 80] Page 13 | Highlight
+        Text: 167. Final cleaning - construction - Residential
+
+  [ 81] Page 13 | Highlight
+        Text: 168. R&R Carpet pad
+
+  [ 82] Page 13 | Highlight
+        Text: 170. Carpet
+
+  [ 83] Page 13 | Highlight
+        Text: 171. Content Manipulation charge - per hour
+
+  [ 84] Page 14 | Highlight
+        Text: 172. R&R Carpet pad
+
+  [ 85] Page 14 | Highlight
+        Text: 179. Mirror/shower door labor minimum
+
+  [ 86] Page 14 | Highlight
+        Text: 180. Heat, vent, & air cond. labor minimum
+
+==========================================================================================
+COLOR: warm_yellow (#ffcc00)  |  Count: 13
+==========================================================================================
+
+  [  1] Page  3 | StickyNote
+        Text: Page:
+        Comment: Addition from Adjuster's Estimate: Line item 42 from the adjuster's proposal "Tape joint for new to existing drywall - per LF" (19.33 LF) in the Hall Bathroom is missing from this estimate and should be added to the Bathroom section. This is needed to properly join new drywall installations to existing drywall.
+
+  [  2] Page  5 | StickyNote
+        Text: Page:
+        Comment: Addition from Adjuster's Estimate: Line item 21 from the adjuster's proposal 'Tape joint for new to existing drywall - per LF' with a quantity of 24.67 LF in the Laundry Room is missing from this estimate and should be added to the Laundry Room section after line item 58 (drywall installation).
+
+  [  3] Page  6 | StickyNote
+        Text: Page:
+        Comment: Addition from Adjuster's Estimate: Line item 19 from the adjuster's proposal "Detach & Reset Shelving - 12" - in place" (7.00 LF) in the Laundry Room is missing from this estimate and should be added to the Laundry Room.
+
+  [  4] Page  6 | StickyNote
+        Text: 3,101.74
+        Comment: Addition from Adjuster's Estimate: Line item 20 from the adjuster's proposal "Seal & paint wood shelving, 12"- 24" width" in the Laundry Room is missing from this estimate and should be added to the Laundry Room section for 7.00 LF of shelving.
+
+  [  5] Page  6 | StickyNote
+        Text: 18.08
+        Comment: Addition from Adjuster's Estimate: Line item 86 from the adjuster's proposal 'Paint baseboard - two coats (For replace baseboared)' for 7.00 LF in the Offset is missing from this estimate and should be added to the Laundry Room. The current estimate only includes one coat of paint for the baseboards, but the adjuster's estimate specifies two coats for replaced baseboards.
+
+  [  6] Page  7 | StickyNote
+        Text: Page:
+        Comment: Addition from Adjuster's Estimate: Line item 3 from the adjuster's proposal 'Freezer - Remove & reset' in the Garage is missing from this estimate and should be added to the Garage.
+
+  [  7] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: Addition from Adjuster's Estimate: Line item 5 from the adjuster's proposal 'Tape joint for new to existing drywall - per LF' with a quantity of 17.00 LF in the Garage is missing from this estimate and should be added to the Garage section. This is needed for proper finishing where new drywall meets existing drywall.
+
+  [  8] Page  7 | StickyNote
+        Text: 3,722.57
+        Comment: Addition from Adjuster's Estimate: Line item 11 from the adjuster's proposal "Paint baseboard - two coats (For replace baseboared)" in the Garage is missing from this estimate and should be added to the Garage section. The adjuster's estimate distinguishes between painting the newly replaced baseboards with two coats versus existing baseboards with one coat.
+
+  [  9] Page  8 | StickyNote
+        Text: Page:
+        Comment: Addition from Adjuster's Estimate: Line item 88 from the adjuster's proposal "Carpet pad - per specs from independent pad analysis" for 40.40 SF in the Offset area is missing from this estimate and should be added to the Hallway section. This is for carpet pad in the offset/transitional area that connects multiple rooms.
+
+  [ 10] Page  9 | StickyNote
+        Text: Page:
+        Comment: Addition from Adjuster's Estimate: Line item 78 from the adjuster's proposal "Remove Carpet (Some carpet and pad was removed by mitigation company)" for 15.10 SF in the Stair Closet is missing from this estimate and should be added to the Stair Closet section before installing new carpet pad and carpet.
+
+  [ 11] Page 11 | StickyNote
+        Text: Page:
+        Comment: Addition from Adjuster's Estimate: Line item 55 from the adjuster's proposal "Tape joint for new to existing drywall - per LF" (14.00 LF) in the Bedroom area is missing from this estimate and should be added to Bedroom 1.
+
+  [ 12] Page 11 | StickyNote
+        Text: [area marking]
+        Comment: Addition from Adjuster's Estimate: Line item 56 from the adjuster's proposal 'Texture drywall - light hand texture' (56.00 SF) in the Bedroom is missing from this estimate and should be added to Bedroom 1 to properly finish the drywall repairs.
+
+  [ 13] Page 12 | StickyNote
+        Text: Page:
+        Comment: Addition from Adjuster's Estimate: Line item 89 from the adjuster's proposal 'Carpet - per specs from independent carpet analysis' for 66.17 SF in the Offset area is missing from this estimate and should be added to the Living Room, as the Offset appears to be a transitional area adjacent to the Living Room.
+
+==========================================================================================
+COLOR: yellow (#ffff00)  |  Count: 175
+==========================================================================================
+
+  [  1] Page  2 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not list any line item for Residential Supervision/Project Management on the Main Level. While overhead costs might be incorporated in other areas like general contractor overhead/profit, this specific line item is missing.
+
+  [  2] Page  2 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item for electrical testing such as a Megohmmeter check; it appears this work was excluded from the adjuster's scope.
+
+  [  3] Page  2 | StickyNote
+        Text: multi-
+        Comment: The adjuster's estimate does not include any safety equipment or PPE items related to respirators, so there is no matching line item for the JDR 'Respirator - Half face - multi-purpose resp. (per day)' item.
+
+  [  4] Page  2 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item corresponding to 'Respirator cartridge - HEPA only (per pair)', indicating this PPE item is missing entirely.
+
+  [  5] Page  2 | StickyNote
+        Text: [area marking]
+        Comment: The HEPA filter line item does not appear in the adjuster’s estimate; there is no specific line item for canister/backpack vacuum filters, only general cleaning items that do not cover this functionality.
+
+  [  6] Page  2 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate uses square footage (45.00 SF) for batt insulation while the JDR estimate uses linear feet (5.42 LF). They address the same work but with different measurement methodologies.
+
+  [  7] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster’s estimate lists this item at 14.33 LF compared to JDR's 11.50 LF. JDR should note the higher quantity on the adjuster’s side.
+
+  [  8] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The JDR line item is for a small 8 SF repair for drywall around the tub surround, but the adjuster's estimate only includes a larger scope item for the tub surround drywall (line item #39 at 63 SF) and does not separately list an 8 SF repair. Therefore, the specific repair is not separately captured in the adjuster’s estimate.
+
+  [  9] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate in the Hall Bathroom section does not include any line item corresponding to a drywall window return repair, so the JDR item is not matched.
+
+  [ 10] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate (line item #43) shows 78.00 SF for the texture drywall while the JDR line item is for 38.75 SF. Adjust for the difference in square footage.
+
+  [ 11] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate includes a similar painting item (#45 - 'Paint part of the walls and ceiling - one coat') but with a single coat of paint and 221.83 SF, whereas the JDR estimate specifies seal/prime (1 coat) and then paint (2 coats) for 150.50 SF. JDR should note the differences in coat count and area.
+
+  [ 12] Page  3 | StickyNote
+        Text: paint vanity
+        Comment: The adjuster's estimate has the vanity listed for 3.00 LF compared to JDR's 2.58 LF. JDR should verify the correct measurement if necessary.
+
+  [ 13] Page  3 | StickyNote
+        Text: 4.58
+        Comment: The adjuster's estimate does not include a separate line item for painting/sealing the vanity; it only includes vanity installation. Therefore, this line item from the JDR estimate is missing in the adjuster's estimate.
+
+  [ 14] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate includes a vanity line item (line item 37 in the Hall Bathroom) but does not separately list a vanity top for one sink cultured marble. This line item is therefore omitted and should be discussed.
+
+  [ 15] Page  3 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not include a separate backsplash line item; the vanity is listed but no separate backsplash is present.
+
+  [ 16] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a line item for 'Sink - single - Reset'; although there are other bathroom-related items, there is no specific match.
+
+  [ 17] Page  3 | StickyNote
+        Text: ABS (plastic)
+        Comment: The adjuster's estimate does not include a separate line item for a sink faucet reset in the bathroom. It may be included in another item or omitted, but there is no direct match.
+
+  [ 18] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The P-trap assembly - ABS (plastic) from the JDR estimate is not found in the adjuster's estimate. There is no corresponding line item in the adjuster's scope of work.
+
+  [ 19] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a line item for a plumbing fixture supply line associated with the sink/vanity installation.
+
+  [ 20] Page  3 | StickyNote
+        Text: Mirror -
+        Comment: The 'Angle stop valve' in the Bathroom (2.00 EA, $109.26) is not found in the adjuster's estimate. There is no corresponding plumbing line item for this in the adjuster's estimate.
+
+  [ 21] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item corresponding to 'Detach & Reset Mirror - framed' in the Bathroom or any other section.
+
+  [ 22] Page  3 | StickyNote
+        Text: mortar residue
+        Comment: The adjuster's estimate does not include any line item for concrete grinding; the floor leveling cement item is a different process and not a substitute for grinding to remove mortar residue and prep the substrate.
+
+  [ 23] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item for HEPA Vacuuming - Light - (PER SF) in the Bathroom, and no similar dust control measure is present in the corresponding Hall Bathroom section.
+
+  [ 24] Page  3 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's line item (#52 'Floor leveling cement - Average') appears equivalent to JDR's 'Mortar bed for tile floors' but differs in terminology, quantity (43.33 SF vs. 22.28 SF) and unit price ($2.58 vs. $4.69 per SF). Consider discussing this discrepancy with the adjuster to maximize reimbursement.
+
+  [ 25] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate lists the tile floor covering at 43.33 SF, which is nearly double the quantity of 22.28 SF noted in the JDR estimate. JDR should review the measurements to ensure the area is correctly calculated.
+
+  [ 26] Page  4 | StickyNote
+        Text: 3 1/4"
+        Comment: The adjuster's estimate does not include any line item for grout sealer corresponding to the JDR line item for 22.28 SF in the Bathroom.
+
+  [ 27] Page  4 | StickyNote
+        Text: paint (1 coat)
+        Comment: The adjuster's estimate (line item 46) lists a 3 1/4" baseboard with MDF w/profile at 14.33 LF, which is similar in type but has a slightly different material specification and increased footage compared to the JDR estimate of 11.50 LF. JDR should review these differences with the adjuster to ensure appropriate compensation.
+
+  [ 28] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate includes baseboard painting in the Hall Bathroom but only as a two-coat application (e.g., line item #48) rather than the one-coat approach specified in the JDR estimate. This difference in scope means there is no direct match.
+
+  [ 29] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The Door stop - wall or floor mounted line item does not appear anywhere in the adjuster's estimate, with no similar door-related item present.
+
+  [ 30] Page  4 | StickyNote
+        Text: -
+        Comment: Exact match; the adjuster's estimate lists this as line item #47 with an 8 cent difference in the base price, which is negligible.
+
+  [ 31] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate line item #49 is for 'Paint door or window opening - 2 coats (per side)' with a quantity of 1 EA, while the JDR estimate specifies 'Seal & paint door/window trim & jamb - (per side)' with a quantity of 2 EA. The work is essentially the same but the adjuster's quantity is half of JDR's.
+
+  [ 32] Page  4 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate only includes 'Interior door - Reset - slab only' (line item #14) without door hinges, whereas JDR’s item combines door hinges with the slab reset. The adjuster’s pricing reflects a different scope, so JDR should note the missing door hinges cost.
+
+  [ 33] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not contain a line item that specifically covers on site door prep for full mortised hinges. Although there are related door work items, none match the labor-only description provided in the JDR estimate.
+
+  [ 34] Page  4 | StickyNote
+        Text: (per
+        Comment: The line item 'Interior door - Reset - slab only' matches exactly in description and pricing, with JDR pricing at $13.77 vs. adjuster at $13.75.
+
+  [ 35] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate for the Hall Bathroom does not include a line item for masking walls with plastic, paper, and tape, which is included in the JDR estimate.
+
+  [ 36] Page  4 | StickyNote
+        Text: -
+        Comment: The 'Floor protection - plastic and tape -10 mil' line item in the Bathroom is not found in the adjuster's estimate (including in the Hall Bathroom section), indicating that the item was included by JDR but omitted by the adjuster.
+
+  [ 37] Page  4 | StickyNote
+        Text: fixture supply
+        Comment: The adjuster's estimate uses 'Install Toilet' (line item #35) and has different pricing compared to JDR's 'Toilet - Reset', but the scope is essentially the same.
+
+  [ 38] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The plumbing fixture supply line item is present in the JDR estimate for the Bathroom but is not found in the adjuster’s estimate, even when checking the relevant bathroom section and plumbing trade summary.
+
+  [ 39] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item for an angle stop valve in the Hall Bathroom (or elsewhere). There is no corresponding plumbing hardware item for the angle stop valve from the JDR estimate.
+
+  [ 40] Page  4 | StickyNote
+        Text: 82.64
+        Comment: The JDR item specifies 82.64 SF of 4" R15 paper/foil faced batt insulation in the bathtub area, while the adjuster's corresponding line item (#38) is for 45.00 SF of 4" R11 unfaced batt insulation. JDR should address the differences in R-value, facing type, and quantity.
+
+  [ 41] Page  4 | StickyNote
+        Text: membrane - poly
+        Comment: The adjuster's estimate does not include a cement board line item. Instead, the adjuster's items for the tub surround are '1/2" drywall - hung, taped, floated, ready for paint' and '1/2" water rock (greenboard) hung, taped ready for texture.' Cement board is a different material specifically used as a tile backer for wet areas, so this is a significant material difference.
+
+  [ 42] Page  4 | StickyNote
+        Text: 69.44
+        Comment: The adjuster's estimate does not include any line item for waterproof membrane or similar waterproofing material under the tile, even though the JDR estimate includes it under the Bathtub section.
+
+  [ 43] Page  4 | StickyNote
+        Text: surround - 60
+        Comment: The adjuster's estimate has this item listed as 'Install Bathtub' at $526.43 (line item 36 in the Hall Bathroom section), while the JDR estimate lists it as 'Bathtub - Reset' at $438.52. The work is essentially the same, albeit with slightly different wording and pricing. JDR should consider aligning the description or justifying the pricing difference.
+
+  [ 44] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's line item 41, 'Ceramic/porcelain tile (Tub Surround)' for 63.00 SF matches the scope of work described in JDR's 'Tile tub surround - 60 to 75 SF' item. However, the adjuster's pricing and total cost are lower than JDR's estimate. JDR should document this difference in pricing and justify their higher cost if possible.
+
+  [ 45] Page  4 | StickyNote
+        Text: tile wall
+        Comment: The adjuster's estimate does not include a tile soap dish or similar item in the bathroom, so there is no corresponding line item.
+
+  [ 46] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item corresponding to sealing grout on tile wall in the Bathroom according to the review. This item appears to be unique to the JDR estimate.
+
+  [ 47] Page  4 | StickyNote
+        Text: sill - tile
+        Comment: The adjuster’s estimate does not include any line item that corresponds to a tile towel bar installation in the bathroom. The items present are related to other tile work (e.g., tub surround, floor tile) but none specifically cover a towel bar.
+
+  [ 48] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any work specifically for repairing or replacing the window sill tile as described in the JDR estimate. This should be brought to the adjuster's attention for review.
+
+  [ 49] Page  4 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a specific line item for tub/shower faucet detach & reset in the Bathroom. Although their estimate includes bathtub installation, the faucet reset work is absent.
+
+  [ 50] Page  5 | StickyNote
+        Text: reset
+        Comment: The adjuster’s estimate does not include any item corresponding to 'Detach & Reset Towel bar'. It appears this work was either omitted or handled differently, so there is no matching line item.
+
+  [ 51] Page  5 | StickyNote
+        Text: &
+        Comment: The adjuster's estimate does not include any line item for the towel ring - detach & reset, so this item is not matched.
+
+  [ 52] Page  5 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item that corresponds to 'Toilet paper holder - Detach & reset'.
+
+  [ 53] Page  5 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item matching 'Detach & Reset Light bar - 4 lights' in the Bathroom or any other section.
+
+  [ 54] Page  5 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a dedicated content manipulation charge for the bathroom area, even though similar charges appear in other sections for different rooms. Therefore, there is no matching line item for the 0.50 HR charge in the Bathroom.
+
+  [ 55] Page  5 | StickyNote
+        Text: - Bedroom Bedroom 1 1
+        Comment: The adjuster's estimate shows this line item for 43.33 SF in the Hall Bathroom, while the JDR estimate lists 22.28 SF. JDR should verify and adjust the square footage if applicable.
+
+  [ 56] Page  5 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not include a line item corresponding to 9.75 LF of batt insulation replacement in the Laundry Room.
+
+  [ 57] Page  5 | StickyNote
+        Text: 24.83 62.08
+        Comment: The adjuster's estimate lists 24.67 LF for the drywall per LF item in the Laundry Room, which is nearly identical to the JDR quantity of 24.83 LF (a negligible rounding difference).
+
+  [ 58] Page  5 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate lists the texture drywall - light hand texture at 98.00 SF while the JDR estimate is for 62.08 SF. JDR should note this discrepancy and consider using the adjuster's higher quantity to maximize the reimbursement.
+
+  [ 59] Page  5 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's line item 24 covers painting with one coat on both walls and ceiling (258.67 SF) while the JDR item requires seal/prime plus two coats on just the walls (223.50 SF). JDR should note these differences in number of coats and area covered.
+
+  [ 60] Page  5 | StickyNote
+        Text: mortar residue
+        Comment: The JDR line item for concrete grinding (to remove mortar residue and prep the substrate for new tile flooring) is not directly present in the adjuster's estimate. Instead, the adjuster has line item #32 for 'Floor leveling cement - Average' which achieves a similar purpose through a different method. JDR should note the difference in methodology between concrete grinding and floor leveling cement.
+
+  [ 61] Page  5 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a specific line item for HEPA Vacuuming - Light - (PER SF). It appears this specialized cleaning service is omitted entirely, with only general cleaning items present.
+
+  [ 62] Page  6 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a corresponding item for 'Mortar bed for tile floors' in the Laundry Room. The adjuster's flooring section only contains 'floor leveling cement - Average' and 'Tile floor covering', which are not equivalent to a mortar bed.
+
+  [ 63] Page  6 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's line item (#33) has a quantity of 36.67 SF compared to JDR's 37.05 SF, which is a common minor measurement variation.
+
+  [ 64] Page  6 | StickyNote
+        Text: 3 1/4"
+        Comment: The adjuster’s estimate does not include a specific line item for grout sealer in the Laundry Room.
+
+  [ 65] Page  6 | StickyNote
+        Text: paint (1 coat)
+        Comment: The adjuster's estimate lists the baseboard as 'Baseboard - 3 1/4" MDF w/profile' for 24.67 LF, while the JDR estimate shows 24.83 LF with no material specified. The difference is minimal; use the adjuster's item to maximize reimbursement.
+
+  [ 66] Page  6 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster’s estimate includes line item #28 ('Paint baseboard - one coat') for 24.67 LF, which corresponds to JDR’s 'Seal (1 coat) & paint (1 coat) baseboard' in the Laundry Room (22.28 LF). The slight difference in measurements is likely due to rounding or different measurement methods. JDR should reference the adjuster’s line item to maximize the claim.
+
+  [ 67] Page  6 | StickyNote
+        Text: [area marking]
+        Comment: The JDR line item 'Door stop - wall or floor mounted' in the Laundry Room has no corresponding match in the adjuster's estimate.
+
+  [ 68] Page  6 | StickyNote
+        Text: -
+        Comment: The adjuster's item (#26) in the Laundry Room matches the JDR item in description, quantity, and pricing (only a minor price difference of $179.06 vs $179.14, which is negligible).
+
+  [ 69] Page  6 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster’s estimate specifies '2 coats' for painting the door/window opening, while the JDR line item only states 'seal & paint'. Otherwise, the work, quantity, and location match.
+
+  [ 70] Page  6 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate includes a line item for resetting the door slab ('Interior door - Reset - slab only') in the Laundry Room, but it does not include any work for detaching and resetting the door hinges. As a result, the door hinge component is missing.
+
+  [ 71] Page  6 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a specific line item for 'on site door prep. for full mortised hinges - Labor only' in the Laundry Room. Although there are several door-related items in the adjuster's estimate, none corresponds to the preparation of mortised hinges.
+
+  [ 72] Page  6 | StickyNote
+        Text: (per
+        Comment: The adjuster's estimate includes an 'Interior door - Reset - slab only' line item in the Laundry Room (line item #30) with nearly identical pricing to the JDR estimate.
+
+  [ 73] Page  6 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a masking wall - plastic, paper, tape (per LF) line item in the Laundry Room.
+
+  [ 74] Page  6 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not include a line item for temporary floor protection (plastic and tape - 10 mil) in the Laundry Room.
+
+  [ 75] Page  6 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate specifies a front-loading washer while the JDR estimate does not specify the type, but the work (remove and reset) is equivalent. Use adjuster's item #17.
+
+  [ 76] Page  6 | StickyNote
+        Text: charge -
+        Comment: The adjuster's estimate uses 'Detach & Reset Dryer - Electric' (line item #18) which is essentially the same work as 'Dryer - Remove & reset'. The difference in terminology is minimal; JDR should note that these items are equivalent.
+
+  [ 77] Page  6 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster’s estimate does not include a general 'Content Manipulation charge - per hour' line item in the Laundry Room. Instead, it lists specific appliance reset charges (e.g., washer and dryer) and content manipulation is handled in other sections, not as a general hourly charge for the Laundry Room.
+
+  [ 78] Page  6 | StickyNote
+        Text: -
+        Comment: The line item in the JDR estimate for Final cleaning - construction - Residential in the Laundry Room directly matches the adjuster's estimate line item #16 with no substantial differences in the description.
+
+  [ 79] Page  7 | StickyNote
+        Text: - 14.25
+        Comment: The adjuster's insulation line item is measured in square feet (6.00 SF) instead of linear feet as in the JDR estimate (14.25 LF). They represent the same scope of work but the quantity/measurement units differ. JDR should verify the conversion to ensure proper reimbursement.
+
+  [ 80] Page  7 | StickyNote
+        Text: 14.25 35.63
+        Comment: The adjuster's estimate includes a matching '1/2" - drywall per LF - up to 2' tall' line item in the Garage (line item #7) with a quantity of 17.00 LF. The description is identical, but there is a discrepancy in the quantity which should be confirmed.
+
+  [ 81] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: Both estimates include a texture drywall (light hand texture) item for the Garage, but the JDR estimate specifies a smaller square footage (approximately 38.75 SF for blending) compared to the adjuster's estimate which lists 68.00 SF. JDR should note the difference in quantity and use the adjuster's line item (#6) for maximizing reimbursement.
+
+  [ 82] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's item (#8) covers 'Paint the walls and ceiling - one coat' for the Garage, while the JDR item specifies a seal/prime with 1 coat followed by 2 coats of paint. JDR should note the scope difference when discussing reimbursement.
+
+  [ 83] Page  7 | StickyNote
+        Text: paint (1 coat)
+        Comment: The adjuster's estimate lists the line item as 'Baseboard - 3 1/4" MDF w/profile' with 17.00 LF, which matches the JDR item.
+
+  [ 84] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate includes a baseboard painting line item (line item #12) with a one coat paint over 55.00 LF, whereas the JDR line item requires seal & paint over 90.50 LF. JDR should note the difference in quantity and that the adjuster's description does not include sealing.
+
+  [ 85] Page  7 | StickyNote
+        Text: -
+        Comment: The line item matches exactly. The adjuster's line item #10 in the Garage has the description 'Door opening (jamb & casing) - 32"to36"wide - paint grade', with a quantity of 1.00 EA and a unit price of $179.06 compared to JDR's $179.14. The small difference of 8 cents is negligible.
+
+  [ 86] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster’s line item (no. 13) describes painting door/window openings with 2 coats, which essentially matches the JDR item for sealing and painting door/window trim & jamb. The wording is slightly different but the scope and quantity are the same.
+
+  [ 87] Page  7 | StickyNote
+        Text: -
+        Comment: The adjuster's line item #14 in the Garage section covers the resetting of the door slab, but it does not explicitly mention detaching and resetting door hinges. The work is similar, though JDR's description is more detailed regarding the hinges. JDR should note this metadata difference.
+
+  [ 88] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a line item for on site door prep. for full mortised hinges - labor only, even though there are other door-related items in the Garage section.
+
+  [ 89] Page  7 | StickyNote
+        Text: (per
+        Comment: The line item matches in description and quantity in the Garage. The only difference is a minor pricing discrepancy: JDR's price is $13.77 compared to the adjuster's $13.75.
+
+  [ 90] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster lists 'Paint door slab only - 2 coats (per side)' as line item 15 in the Garage with a unit price of 50.33 compared to JDR’s 50.56. This minor discrepancy is negligible.
+
+  [ 91] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a line item for masking walls in the Garage.
+
+  [ 92] Page  7 | StickyNote
+        Text: - 407.24
+        Comment: The adjuster's estimate does not contain any line item corresponding to 'Floor protection - plastic and tape - 10 mil' in the Garage.
+
+  [ 93] Page  7 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's line item (#2) is for 'Contents - move out then reset - Large room' measured as a single event, while JDR’s 'Content Manipulation charge - per hour' is priced by the hour. They serve the same purpose though the measurement units differ. JDR should note the difference in units.
+
+  [ 94] Page  7 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not contain a corresponding 'Final cleaning - construction - Residential' line item for the Garage. JDR's final cleaning for the Garage (407.24 SF at $0.37 per SF) appears to be omitted in the adjuster's estimate.
+
+  [ 95] Page  8 | StickyNote
+        Text: 17.28 43.20
+        Comment: The same line item description exists in the adjuster’s estimate (line item #83) but the quantity differs (7.00 LF in the adjuster’s estimate vs 17.28 LF in the JDR estimate). JDR should verify the measurement methods to justify the difference.
+
+  [ 96] Page  8 | StickyNote
+        Text: [area marking]
+        Comment: The line item matches in terms of type and unit pricing, but the quantity differs (JDR has 38.75 SF while the adjuster's estimate shows 28.00 SF).
+
+  [ 97] Page  8 | StickyNote
+        Text: [area marking]
+        Comment: The matching item in the adjuster's estimate (#84 in the Offset area) only covers one coat of paint without seal/prime, whereas the JDR line item includes seal/prime plus two coats. The specifications and coverage differ.
+
+  [ 98] Page  8 | StickyNote
+        Text: [area marking]
+        Comment: The cold air return cover detachment & reset in the Hallway is not present anywhere in the adjuster's estimate.
+
+  [ 99] Page  8 | StickyNote
+        Text: paint (1 coat)
+        Comment: The adjuster’s estimate includes a Baseboard - 3 1/4" MDF w/profile line item for 7.00 LF in the Offset section, which closely matches the JDR’s 7.28 LF. The slight discrepancy in length is negligible and suggests similar work. JDR should use the adjuster’s quantity to maximize reimbursement.
+
+  [100] Page  8 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate has the baseboard paint line item at 14.63 LF (undamaged baseboards) in the Offset section, which corresponds to the Hallway in JDR's estimate, but the JDR quantity is 22.11 LF. JDR should verify which measurement is correct and adjust pricing accordingly.
+
+  [101] Page  8 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate includes a line item 'Paint door or window opening - 2 coats (per side)' with nearly identical pricing ($42.94 vs $43.19) and scope. Although it is categorized under the overall trade summary rather than explicitly labeled for the Coat Closet, it represents the same work.
+
+  [102] Page  8 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not list a separate ‘Hallway Carpet Pad’ item; instead, it covers the carpet pad for the connected area in the Living Room (line item 75) with 18.00 SF. JDR should reference this line item since the connected areas are combined in the adjuster's estimate.
+
+  [103] Page  8 | StickyNote
+        Text: added for
+        Comment: The hallway carpet in JDR is separated as 42.61 SF, but the adjuster's estimate combines it with the Living Room carpet under line item 76 (383.08 SF, noted as continuous with Hallway). JDR should note that the adjuster’s quantity covers additional area.
+
+  [104] Page  8 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does include cleaning work, but it is distributed among multiple cleaning line items (e.g., in the Laundry Room and Hall Bathroom) and a general cleaning labor minimum, rather than having a distinct final cleaning line item for the Hallway as in the JDR estimate.
+
+  [105] Page  8 | StickyNote
+        Text: Hallway Hallway
+        Comment: The adjuster's estimate does not list a specific carpet pad line item in the Coat (Hall) Closet section. Although carpet work is mentioned, the carpet pad work appears to be consolidated or included differently, so there is no direct corresponding line item.
+
+  [106] Page  9 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate has a 'Remove Carpet' line item in the Hall Closet (line item 71) at 8.67 SF at $0.30 per SF, which is similar but has slightly less square footage than the 10.31 SF in the JDR estimate and includes a note about mitigation removal.
+
+  [107] Page  9 | StickyNote
+        Text: continuous
+        Comment: The adjuster's estimate for the Carpet in the Coat (Hall) Closet uses a line item (line item 72, 'Carpet - per specs from independent carpet analysis') at 28.58 SF, which is more than the 10.31 SF in the JDR estimate. JDR should note the difference in measured square footage, which may be due to different measurement methods or inclusion of closet returns.
+
+  [108] Page  9 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not include a per-hour content manipulation charge for the Coat Closet (Hall Closet area) - no equivalent line item is found.
+
+  [109] Page  9 | StickyNote
+        Text: - drywall
+        Comment: The JDR line item for 1/2" drywall per LF - up to 2' tall in the Stair Closet does not have a corresponding line item in the adjuster's estimate for that room.
+
+  [110] Page  9 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any drywall texturing work in the Stair Closet, indicating this is a genuine difference where JDR included this repair item but the adjuster did not.
+
+  [111] Page  9 | StickyNote
+        Text: 143.37
+        Comment: The adjuster's estimate does not include any wall painting line item for the Stair Closet, which results in no corresponding match for the JDR wall painting item (Seal/prime then paint) in that room.
+
+  [112] Page  9 | StickyNote
+        Text: paint (1 coat)
+        Comment: The adjuster's estimate consolidates baseboard work into a single, overall line item rather than breaking it out by room, so there is no specific line item for baseboards in the Stair Closet.
+
+  [113] Page  9 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not itemize Stair Closet baseboard painting separately but includes it within their grouped baseboard painting items ('Paint baseboard - one coat' and 'Paint baseboard - one coat (Undamaged baseboards)'). JDR’s line item is similar work with different metadata; to maximize recovery, reference the grouped item (e.g., line item 81) in the adjuster’s estimate.
+
+  [114] Page  9 | StickyNote
+        Text: -
+        Comment: The adjuster’s estimate includes the identical door opening (jamb & casing) – 32"to36" wide – paint grade line item (listed as 4.00 EA under finish carpentry/trimwork) even though it is allocated to different rooms (Garage, Laundry Room, Hall Bathroom, Bedroom) instead of specifically the Stair Closet.
+
+  [115] Page  9 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does cover this work under a general door/window trim painting line item (quoted as 'Paint door or window opening - 2 coats (per side)'). Although it is allocated across various rooms rather than being isolated in the Stair Closet, the unit pricing (around $42.94 plus O&P, totaling roughly $52.08) is very similar to JDR’s $43.19. JDR should reference the adjuster’s door/window trim paint item when discussing this scope of work.
+
+  [116] Page 10 | StickyNote
+        Text: -
+        Comment: The door hinges (set of 3) and slab - Detach & reset item in the Stair Closet does not have a corresponding line item in the adjuster's estimate. Although similar items appear in other rooms, none specifically address this work in the Stair Closet.
+
+  [117] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a corresponding line item for 'On site door prep. for full mortised hinges - Labor only' in the Stair Closet. This necessary labor task is missing and needs further discussion with the adjuster.
+
+  [118] Page 10 | StickyNote
+        Text: (per
+        Comment: The adjuster's estimate includes a combined interior door reset - slab only line item (line item #30 under 'DOR DOORS') that covers all door resets, with a similar unit cost ($13.75 vs $13.77). JDR should note the combined treatment of door resets in the adjuster's estimate.
+
+  [119] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does include door slab painting under a grouped line item (covering 4 door slabs, see the 'Paint door slab only - 2 coats (per side)' line in the Trade Summary on pages 18-19 or room-by-room item #65), rather than listing a separate item for the Stair Closet. JDR should reference the grouped line item to maximize recovery.
+
+  [120] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: No matching line item for 'Mask wall - plastic, paper, tape (per LF)' was found in the adjuster's estimate.
+
+  [121] Page 10 | StickyNote
+        Text: 24.83
+        Comment: No corresponding line item for Floor protection - plastic and tape - 10 mil was found in the Stair Closet section of the adjuster's estimate.
+
+  [122] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: The same type of carpet pad is present in the Stair Closet, but the adjuster's estimate lists only 9.00 SF while the JDR estimate is for 24.83 SF. JDR should clarify which area measurement is correct.
+
+  [123] Page 10 | StickyNote
+        Text: added for
+        Comment: The adjuster's estimate (line item #80) shows 'Carpet - per specs from independent carpet analysis' for 45.25 SF, which is similar to the JDR estimate in the Stair Closet but with slightly different measurements (the JDR estimate includes a 15% waste factor). JDR should clarify this difference.
+
+  [124] Page 10 | StickyNote
+        Text: -
+        Comment: The adjuster’s estimate uses a flat rate item (#77: 'Contents - move out then reset - Small room') which covers the same work as the JDR 'Content Manipulation charge - per hour', but the pricing method differs (hourly vs flat rate). JDR should note this difference and consider aligning with the adjuster’s flat rate if it results in a higher reimbursement.
+
+  [125] Page 10 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not include a matching line item for Final cleaning - construction - Residential in the Stair Closet. It appears to be omitted.
+
+  [126] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate lists 'Batt insulation - 4" - R11- unfaced batt' for 6.00 SF, whereas the JDR item is 2.67 LF. Given that the JDR description specifies insulation replacement up to 2' tall, multiplying 2.67 LF by 2' gives approximately 5.34 SF, which is close to the adjuster's quantity. The work is essentially the same despite the difference in units.
+
+  [127] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate lists 1/2" drywall per LF up to 2' tall for 14.00 LF in Bedroom, compared to the 11.00 LF in the JDR estimate, which is a 3 LF difference.
+
+  [128] Page 10 | StickyNote
+        Text: 386.52
+        Comment: The adjuster's Bedroom 1 item (#58) specifies painting with one coat over 502.44 SF, while the JDR line item calls for sealing/priming plus 2 coats of paint (3 total coats) over 386.52 SF. Adjust the pricing and quantities accordingly to ensure JDR receives full reimbursement.
+
+  [129] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item for an outlet or switch cover in the Bedroom section.
+
+  [130] Page 10 | StickyNote
+        Text: paint (1 coat)
+        Comment: The adjuster's estimate lists 'Baseboard - 3 1/4" MDF w/profile' at 14.00 LF, while the JDR estimate is 11.00 LF. They are the same type of work but with different quantities. JDR should note the adjuster's higher quantity.
+
+  [131] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate includes a 'Paint baseboard - one coat' line item at 31.80 LF in the Bedroom, while the JDR estimate is for 42.95 LF. JDR should note the discrepancy in linear footage measurement.
+
+  [132] Page 10 | StickyNote
+        Text: [area marking]
+        Comment: The 'Door stop - wall or floor mounted' line item ($18.04) in the JDR estimate for Bedroom 1 is not present in the adjuster’s estimate for that room.
+
+  [133] Page 11 | StickyNote
+        Text: -
+        Comment: The adjuster’s line item #63 is for painting door/window trim & jamb with 2 coats per side, matching the scope of the JDR item, but it omits the 'Large' descriptor and the unit pricing is lower ($42.94 vs $50.75). JDR should review pricing differences.
+
+  [134] Page 11 | StickyNote
+        Text: -
+        Comment: The description, quantity, location, and pricing are nearly identical. The minor price difference (JDR: $179.14 vs Adjuster's: $179.06) is negligible.
+
+  [135] Page 11 | StickyNote
+        Text: [area marking]
+        Comment: The JDR line item 'Seal & paint door/window trim & jamb - (per side)' in Bedroom 1 matches the adjuster's 'Paint door or window opening - 2 coats (per side)' (line item #63) with only a slight wording difference.
+
+  [136] Page 11 | StickyNote
+        Text: -
+        Comment: The adjuster's Bedroom section includes a line item (#64, 'Interior door - Reset - slab only') which only covers resetting the door slab without mentioning door hinges. The JDR estimate explicitly includes door hinges (set of 3) in addition to the slab reset. JDR should document the additional hinge work to ensure appropriate reimbursement.
+
+  [137] Page 11 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate includes a line item exactly matching the description, quantity, and scope of work with the same identifier, line item #139.
+
+  [138] Page 11 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include any line item that corresponds to the temporary wall protection (masking) item listed in the JDR estimate for Bedroom 1.
+
+  [139] Page 11 | StickyNote
+        Text: 42.95
+        Comment: The floor protection - plastic and tape - 10 mil line item does not appear in the adjuster's estimate under the Bedroom section or related categories.
+
+  [140] Page 11 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a line item for 'Cold air return cover - Detach & reset' in the Bedroom, so this work appears to be omitted from their estimate.
+
+  [141] Page 11 | StickyNote
+        Text: was not
+        Comment: The adjuster's estimate includes a 'Remove Carpet' item for Bedroom with a quantity of 108.04 SF, noting that some carpet and pad were removed during mitigation. This represents the same scope of work but with a different quantity. JDR should document this quantity difference.
+
+  [142] Page 11 | StickyNote
+        Text: was not
+        Comment: The adjuster's estimate includes a 'Remove Carpet pad' line item (line item #68) with the same quantity (98.61 SF) as the JDR line item, even though the adjuster's estimate notes that some carpet pad was already removed during mitigation.
+
+  [143] Page 11 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate (line item #67) lists carpet pad for the bedroom at 28.00 SF versus JDR's 120.11 SF. This is a corresponding item but with significantly different quantity. JDR should document and justify the higher area to ensure maximum reimbursement.
+
+  [144] Page 11 | StickyNote
+        Text: 15% waste
+        Comment: The matching line item (#68) for Carpet in the Bedroom in the adjuster's estimate shows 161.83 SF compared to JDR's 138.12 SF and a unit price of $4.67 versus $3.88. Both include a 15% waste factor, so the differences likely stem from measurement methods and pricing. JDR should verify the measurement methodology to ensure proper reimbursement.
+
+  [145] Page 11 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not include a content manipulation charge specifically for Bedroom 1. The JDR line item of 2.00 hours at $34.33/hour is missing on the adjuster's side.
+
+  [146] Page 11 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not list a final cleaning line item specifically for Bedroom 1. While there is a general cleaning line item in the Trade Summary, it is combined for multiple rooms and does not directly correspond to the JDR line item for Bedroom 1.
+
+  [147] Page 12 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a specific line item for the R&R Carpet pad in the BRM Closet (Bedroom 1 Closet). Although there are carpet replacement items, no separate carpet pad replacement is listed.
+
+  [148] Page 12 | StickyNote
+        Text: [area marking]
+        Comment: The JDR 'Remove Carpet in the Bedroom 1 Closet' line item exactly corresponds to the 'Remove Carpet 16.69 SF' listed under the BRM Closet in the adjuster's estimate.
+
+  [149] Page 12 | StickyNote
+        Text: continuous
+        Comment: The adjuster's estimate includes a carpet line item for the BRM Closet at 38.25 SF, whereas the JDR line item lists only 13.99 SF. The work is the same but the quantity differs, likely due to differing measurement methods or waste factor calculations. JDR should verify the correct square footage and consider adjusting the quantity to maximize reimbursement.
+
+  [150] Page 12 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not contain a matching content manipulation charge for the Bedroom 1 Closet (or corresponding BRM Closet) as listed in the JDR estimate.
+
+  [151] Page 12 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a corresponding line item for the '1/2" - drywall per LF - up to 2' tall' in the Living Room. It is either omitted or categorized differently, with no explicit match for the 1.17 LF quantity present in the JDR estimate.
+
+  [152] Page 12 | StickyNote
+        Text: 482.95
+        Comment: The adjuster's estimate does include a line item for wall painting (listed as 'Paint {V} - one coat' in the Trade Summary) that would cover the work in the Living Room, but it consolidates painting for multiple rooms and specifies only one coat of paint rather than the JDR specification of a seal/prime (1 coat) plus two coats. JDR should clarify this discrepancy in scope and cost adjustments with the adjuster.
+
+  [153] Page 12 | StickyNote
+        Text: paint (1 coat)
+        Comment: The adjuster's estimate does not list a baseboard - 3 1/4" line item specifically for the Living Room; the only baseboard work is given as a total in the Trade Summary and is not allocated to the Living Room.
+
+  [154] Page 12 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster’s estimate includes the baseboard painting work under a combined 'Paint baseboard - one coat' line item (totaling 111.47 LF across multiple rooms) rather than listing a separate Living Room item for 55.68 LF. JDR should reference the combined item to ensure full recovery for the work.
+
+  [155] Page 12 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate for the Living Room does not include any preparatory masking work for walls, so there is no matching line item for 'Mask wall - plastic, paper, tape (per LF)'.
+
+  [156] Page 13 | StickyNote
+        Text: 55.68
+        Comment: The adjuster's estimate does not include any line item for floor protection - plastic and tape - 10 mil in the Living Room or elsewhere.
+
+  [157] Page 13 | StickyNote
+        Text: -
+        Comment: The JDR estimate includes 'Window drapery - hardware - Detach & reset' in the Living Room, but no corresponding or similar line item is present in the adjuster's estimate.
+
+  [158] Page 13 | StickyNote
+        Text: [area marking]
+        Comment: The JDR estimate combines both removal and replacement in one 'R&R Carpet pad' line item, but the adjuster's estimate splits this into two parts – with line item 75 covering the replacement of the carpet pad (18.00 SF) and line item 74 covering removal. The quantities/specifications differ, so JDR should verify the measurements and ensure that the replacement quantity is properly aligned.
+
+  [159] Page 13 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate has a corresponding line item (#74) for Remove Carpet in the Living Room, but it notes that some carpet and pad were already removed by the mitigation company and shows a different quantity (321.01 SF). JDR should verify the actual conditions and adjust the quantity if needed.
+
+  [160] Page 13 | StickyNote
+        Text: continuous
+        Comment: The same work (carpet installation) is represented, but the adjuster's estimate lists a higher quantity (383.08 SF) compared to JDR's 321.11 SF. JDR should document this quantity difference to support reimbursement.
+
+  [161] Page 13 | StickyNote
+        Text: -
+        Comment: The JDR line item is charged per hour for content manipulation, whereas the adjuster's estimate uses a flat rate (line item #73) for moving and resetting contents in the Living Room (notably mentioning the grand piano). JDR should note the difference in pricing methodology and negotiate accordingly.
+
+  [162] Page 13 | StickyNote
+        Text: tesolC tesolC
+        Comment: The adjuster's estimate includes the piano removal/reset within contents manipulation in the Living Room as line item #73 (noted as 'Contents - move out then reset - Large room (Grand Piano is in Living Room)') with a price of $151.10, whereas the JDR line item is a separate bid item with $0.00. JDR should note this handling difference.
+
+  [163] Page 13 | StickyNote
+        Text: -
+        Comment: The JDR line item 'Final cleaning - construction - Residential' in the Living Room is not directly found in the adjuster's estimate as a room-specific item. While the adjuster's estimate includes general cleaning allowances (e.g., under the 'CLN CLEANING' section), there is no direct corresponding line item for this room.
+
+  [164] Page 13 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate for Entry (Tiled Floor) shows 'No covered damage' and does not include any carpet pad replacement, while the JDR estimate includes R&R Carpet pad replacing carpet pad in the Entry. There is no matching line item.
+
+  [165] Page 13 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not list a separate Remove Carpet line item for the Entry; instead, the carpet removal work is included under the Living Room section (line item #74) with 321.01 SF. JDR should note that this grouping covers the Entry area as part of the connected space.
+
+  [166] Page 13 | StickyNote
+        Text: continuous
+        Comment: The adjuster's estimate shows 'No covered damage' for the Entry (Tiled Floor) area and does not include a carpet line item for the Entry, whereas the JDR estimate lists a carpet line item (72.45 SF, continuous with Living Room).
+
+  [167] Page 13 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate does not include a matching 'Content Manipulation charge - per hour' for the Entry. In the Entry section, it states 'No covered damage' and the content manipulation charges appear only in the Trade Summary under different content manipulation items, none of which are allocated to the Entry.
+
+  [168] Page 14 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate for the Dining Room does not include a separate line item for an R&R Carpet pad. While carpet removal is present (line item #91), there is no specific allocation for carpet pad replacement in this room.
+
+  [169] Page 14 | StickyNote
+        Text: identical with
+        Comment: The adjuster's estimate for Dining Room carpet (line item 92) lists 170.83 SF with independent carpet analysis specs, while the JDR estimate shows 163.40 SF. The difference in quantity is minor and likely due to waste factor calculations.
+
+  [170] Page 14 | StickyNote
+        Text: -
+        Comment: The adjuster's estimate line item (#90 'Contents - move out then reset') covers similar work as the JDR 'Content Manipulation charge - per hour,' but the pricing and wording differ. JDR charges $57.21/hour for 1 hour, while the adjuster uses a flat rate of $83.95 with additional O&P.
+
+  [171] Page 14 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate uses 'Haul debris - per pickup truck load - including dump fees' with a quantity of 1.50 EA, which is slightly different from the JDR estimate (tandem axle dump trailer at 1.00 EA). Consider using the adjuster's quantity to maximize reimbursement.
+
+  [172] Page 14 | StickyNote
+        Text: [area marking]
+        Comment: Both estimates cover the insulation labor minimum for the same work. The only difference is in pricing – the adjuster's estimate is higher ($216.51 total) compared to JDR's estimate ($156.86 total). JDR should use the adjuster’s pricing to maximize reimbursement.
+
+  [173] Page 14 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate includes a 'Cabinetry labor minimum' line item with a quantity of 1.00 EA (line item #94), which exactly matches the JDR estimate.
+
+  [174] Page 14 | StickyNote
+        Text: [area marking]
+        Comment: The adjuster's estimate does not include a mirror/shower door labor minimum; it only includes insulation, cleaning, and cabinetry labor minimums in its Labor Minimums Applied section.
+
+  [175] Page 14 | StickyNote
+        Text: [area marking]
+        Comment: The JDR line item for 'Heat, vent, & air cond. labor minimum' is not reflected in the adjuster's estimate.

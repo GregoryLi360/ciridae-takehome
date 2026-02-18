@@ -2,6 +2,31 @@
 
 Compares a JDR contractor repair proposal against an insurance adjuster's estimate, matching line items room-by-room and producing an annotated PDF highlighting discrepancies.
 
+## Quick Start
+
+```bash
+# Backend
+cd backend
+cp .env.example .env   # then edit .env and add your GATEWAY_API_KEY
+uv sync
+uv run uvicorn app.main:app --reload
+
+# Frontend (in a separate terminal)
+cd frontend
+npm install
+npm run dev
+```
+
+The backend runs on http://localhost:8000. The frontend runs on http://localhost:5173 and proxies `/api` requests to the backend.
+
+### Environment Variables
+
+The backend requires a `.env` file in `backend/` with:
+
+```
+GATEWAY_API_KEY=your_key_here
+```
+
 ## Architecture
 
 ```
@@ -60,73 +85,11 @@ Per mapped room group, an LLM call matches JDR items to insurance items by seman
 | Blue | JDR only, no insurance match | `(0.5, 0.8, 1)` |
 | Purple | Insurance only (summary pages) | `(0.75, 0.52, 1)` |
 
-## Data Model
-
-```python
-Bbox = tuple[float, float, float, float]  # (x0, y0, x1, y1)
-
-ExtractedLineItem:
-    description, quantity, unit, unit_price, total, bboxes, page_number
-
-MatchedPair:
-    jdr_item, ins_item, color (green|orange), diff_notes
-
-RoomComparison:
-    jdr_rooms, ins_rooms, matched, unmatched_jdr, unmatched_ins
-
-ComparisonResult:
-    rooms: list[RoomComparison]
-```
-
-## Frontend
-
-React SPA with three states:
-
-1. **Upload** — Two drag-and-drop zones for JDR and insurance PDFs
-2. **Processing** — Stage-by-stage progress indicator (parsing → matching → annotating), polls `GET /api/jobs/{id}` every 2s via React Query
-3. **Results** — Summary stat cards (green/orange/blue/nugget counts), room-by-room collapsible breakdown showing matched pairs with diff notes, and annotated PDF download
-
-## API
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/jobs` | Upload JDR + insurance PDFs, start background processing |
-| `GET` | `/api/jobs/{id}` | Poll job status and summary stats |
-| `GET` | `/api/jobs/{id}/result` | Download annotated PDF |
-| `GET` | `/api/jobs/{id}/items` | Get all line items and classifications |
-
-## LLM Usage
-
-All calls go through the Ciridae Gateway (`https://api.llmgateway.ciridae.app`).
-
-| Call | Model | Purpose |
-|------|-------|---------|
-| Room splitting | `claude-3-7-sonnet` | Identify room sections per page (vision) |
-| Line item extraction | `claude-3-7-sonnet` | Extract structured line items per page (vision) |
-| Room mapping | `fast-production` | Match room names across documents |
-| Line-item matching | `fast-production` | Semantic 1:1 matching of line items per room |
-| Comment generation | `fast-production` | Rationale annotations for the marked-up PDF |
-
 ## Tech Stack
 
 **Backend:** Python 3.13, FastAPI, PyMuPDF, Pydantic, OpenAI SDK, uv
 
 **Frontend:** TypeScript, React 19, Vite, TailwindCSS, shadcn/ui, React Query, Zod
-
-## Setup
-
-```bash
-# Backend
-cd backend
-cp .env.example .env  # add GATEWAY_API_KEY
-uv sync
-uv run python test_matching.py  # run full pipeline on sample docs
-
-# Frontend
-cd frontend
-npm install
-npm run dev
-```
 
 ## Directory Structure
 
