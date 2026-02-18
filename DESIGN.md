@@ -22,6 +22,12 @@
 ```python
 Bbox = tuple[float, float, float, float]
 
+class MatchColor(str, Enum):
+    GREEN = "green"
+    ORANGE = "orange"
+    BLUE = "blue"
+    NUGGET = "nugget"
+
 class LineItemBboxes(BaseModel):
     description: Bbox | None = None
     quantity: Bbox | None = None
@@ -45,6 +51,27 @@ class ExtractedRoom(BaseModel):
 class ParsedDocument(BaseModel):
     source: str                  # "jdr" | "insurance"
     rooms: list[ExtractedRoom]
+
+class DiffNote(BaseModel):
+    field: str                   # "unit", "quantity", "unit_price", "total"
+    jdr_value: str
+    ins_value: str
+
+class MatchedPair(BaseModel):
+    jdr_item: ExtractedLineItem
+    ins_item: ExtractedLineItem
+    color: MatchColor            # GREEN or ORANGE
+    diff_notes: list[DiffNote]
+
+class RoomComparison(BaseModel):
+    jdr_rooms: list[str]
+    ins_rooms: list[str]
+    matched: list[MatchedPair]
+    unmatched_jdr: list[ExtractedLineItem]   # BLUE
+    unmatched_ins: list[ExtractedLineItem]   # NUGGET
+
+class ComparisonResult(BaseModel):
+    rooms: list[RoomComparison]
 ```
 
 ## 3. Pipeline Steps
@@ -53,14 +80,14 @@ class ParsedDocument(BaseModel):
 
 Three-phase approach within a single `parse_document()` call:
 
-1. **Room splitting (LLM)** — Render each page to a 200 DPI PNG via PyMuPDF, send to `claude-3-7-sonnet` to identify room sections. Returns canonical room names per page with continuation flags (e.g. "CONTINUED - Bathroom" → "Bathroom").
-2. **Line item extraction (LLM)** — For each page that has rooms, send the image with the known room list from phase 1. LLM extracts numbered line items with description, quantity, unit, unit_price, total, and assigns each to a room. Structured output via Pydantic `response_format`.
-3. **Per-field bbox location (PyMuPDF)** — For each extracted line item, use `fitz.Page.search_for()` to locate individual field positions on the page:
-   - `description` — progressively shorter prefix search (60, 40, 25 chars)
-   - `quantity`, `unit_price`, `total` — number search with comma formatting, constrained to the same row (±15pt vertical tolerance)
-   - `unit` — text search constrained to the same row
+1. **Room splitting (LLM)** — Render each page to a 200 DPI PNG via PyMuPDF, send to `claude-3-7-sonnet` to identify room sections. Returns canonical room names per page with continuation flags (e.g. "CONTINUED - Bathroom" → "Bathroom"). Photo pages and summary pages are filtered out by checking for table structure.
+2. **Line item extraction (LLM)** — For each page that has rooms, send the image with the known room list from phase 1. LLM extracts numbered line items with description, quantity, unit, unit_price, total, and assigns each to a room. Structured output via Pydantic `response_format`. Items with no pricing data are filtered out.
+3. **Per-field bbox location (PyMuPDF, JDR only)** — For each extracted JDR line item, locate field positions on the page:
+   - `description` — Word-level matching via `get_text("words")`: splits the LLM-extracted description into words, finds the best matching word sequence on the page using fuzzy word comparison (handles curly quotes, punctuation, truncated words), and returns the union bbox of all matched words. Handles multi-line descriptions naturally. Falls back to `search_for` with progressively shorter prefixes (60, 40, 25 chars) if word matching fails.
+   - `quantity`, `unit_price`, `total` — Number search with comma formatting variants, constrained to the same row (±15pt vertical tolerance from description bbox).
+   - `unit` — Text search constrained to the same row.
 
-Each field gets its own tight `(x0, y0, x1, y1)` bbox for targeted highlighting during annotation.
+Each field gets its own tight `(x0, y0, x1, y1)` bbox. Insurance items skip bbox location since they are not highlighted on the JDR PDF.
 
 **Pydantic schemas** (`backend/app/schemas.py`):
 - `LineItemBboxes` — per-field bboxes: description, quantity, unit, unit_price, total
@@ -73,7 +100,8 @@ Each field gets its own tight `(x0, y0, x1, y1)` bbox for targeted highlighting 
 - `_LLMPageItems` → `_LLMLineItem` (description, quantity, unit, unit_price, total, room_name)
 
 ### Step 2 — Room Mapping (LLM)
-- Single LLM call with both room lists → returns mapping as JSON:
+
+- Single LLM call (`fast-production`) with both room lists → returns grouped mapping via Pydantic structured output:
   ```json
   [
     {"jdr_rooms": ["Kitchen", "Breakfast Area"], "ins_rooms": ["Kitchen Area"]},
@@ -81,26 +109,45 @@ Each field gets its own tight `(x0, y0, x1, y1)` bbox for targeted highlighting 
   ]
   ```
 - Handles splits/merges and naming variations
+- Rooms with no counterpart get a group with an empty list on the other side
+- Every room from both lists appears in exactly one group
 
-### Step 3 — Line-Item Matching + Classification (Embeddings + Code)
-- Embed all line-item descriptions from both documents using `text-embedding-3-small` via the gateway
-- **Per mapped room group:**
-  - Compute cosine similarity matrix (JDR items × Insurance items)
-  - Run Hungarian algorithm (via `scipy.optimize.linear_sum_assignment`) to find optimal 1:1 assignment
-  - Apply similarity threshold (e.g. 0.85) — pairs below threshold are unmatched
-- Unmatched JDR items → **Blue**; unmatched Insurance items → **Nugget**
-- For each matched pair, **deterministic code** checks:
-  - `unit` — exact categorical match (SF, LF, EA, etc.)
-  - `quantity`, `unit_price` — ±2% numeric tolerance
-  - All pass → **Green**; any fail → **Orange** with diff notes
+### Step 3 — Line-Item Matching + Classification (LLM + Code)
 
-### Step 4 — Annotated PDF Generation
-- **Tool:** `PyMuPDF (fitz)`
-- Open the original JDR PDF
-- For each line item, draw colored highlight over the description and relevant metadata fields using per-field bboxes from Step 1
-- Add inline annotation with rationale note
-- Append summary page per room listing Nuggets (insurance-only items)
+**Matching (LLM):** Per mapped room group, an LLM call (`fast-production`) matches JDR items to insurance items by semantic similarity of descriptions. The LLM receives both item lists with descriptions, quantities, units, and prices, and returns 0-based index pairs. Each item can appear in at most one match.
+
+**Classification (deterministic code):** For each matched pair, checks fields with unit-aware logic:
+
+- **When units match** (e.g. both SF, both EA):
+  - `quantity` — ±2% numeric tolerance
+  - `unit_price` — ±2% numeric tolerance
+  - All pass → **Green**; any fail → **Orange** with `DiffNote`s
+
+- **When units differ** (e.g. LF vs SF, HR vs EA):
+  - Quantity and unit_price are incomparable across different measurement systems
+  - Flag the unit difference, then compare `total` (±2%) to assess overall cost alignment
+  - Both unit and total flagged → **Orange** with `DiffNote`s for `unit` and `total`
+
+- Unmatched JDR items → **Blue**
+- Unmatched Insurance items → **Nugget**
+
+### Step 4 — Annotated PDF Generation (PyMuPDF + LLM)
+
+- Open the original JDR PDF with PyMuPDF
+- For each line item, draw a single colored highlight over the description text:
+  - Multi-line descriptions are split into per-line rects using `get_text("dict")` line boundaries for proper highlight rendering
+  - Each item gets one highlight color (green, orange, or blue)
+- **LLM-generated sticky notes:** One LLM call (`fast-production`) per room generates concise rationale comments (1-3 sentences each) explaining the match result, referencing specific quantities, prices, and insurance items
+- Append summary pages listing insurance-only (nugget) items grouped by room
 - Save as new PDF
+
+**Highlight colors:**
+| Color | RGB | Meaning |
+|-------|-----|---------|
+| Green | `(0, 1, 0)` | Exact match with insurance |
+| Orange | `(1, 0.5, 0)` | Matched but with field differences |
+| Blue | `(0.5, 0.8, 1)` | JDR only, no insurance match |
+| Purple | `(0.75, 0.52, 1)` | Insurance only (summary pages) |
 
 ## 4. API Endpoints
 
@@ -117,40 +164,43 @@ Job processing runs as a background task (`BackgroundTasks` or simple task queue
 
 Single-page app with three states:
 
-1. **Upload** — Two file dropzones (JDR / Insurance), submit button
-2. **Processing** — Progress indicator, poll `GET /api/jobs/{id}` via React Query
-3. **Result** — Embedded PDF viewer + download button; optional summary table of matches/discrepancies with dollar totals
+1. **Upload** — Two drag-and-drop zones (JDR / Insurance) with file type validation, submit button
+2. **Processing** — Stage-by-stage progress indicator (parsing JDR → parsing insurance → matching → annotating → complete), polls `GET /api/jobs/{id}` every 2s via React Query
+3. **Results** — Summary stat cards (green/orange/blue/nugget counts), room-by-room collapsible breakdown showing matched pairs with diff notes and dollar totals, annotated PDF download button
 
 ## 6. LLM Usage
 
 All calls go through Ciridae Gateway (`https://api.llmgateway.ciridae.app`).
 
-| Call                | Model                    | Input                              | Output Format   |
-|---------------------|----------------------------|------------------------------------|-----------------|
-| Room splitting      | `claude-3-7-sonnet`      | Page image + room ID prompt        | Pydantic schema |
-| Line item extraction| `claude-3-7-sonnet`      | Page image + room context + extraction prompt | Pydantic schema |
-| Room mapping        | `fast-production`          | Two room-name lists                | JSON array      |
-| Description embeddings | `text-embedding-3-small` | All line-item descriptions         | Vector arrays   |
+| Call                 | Model               | Input                                         | Output Format   |
+|----------------------|----------------------|-----------------------------------------------|-----------------|
+| Room splitting       | `claude-3-7-sonnet`  | Page image + room ID prompt                   | Pydantic schema |
+| Line item extraction | `claude-3-7-sonnet`  | Page image + room context + extraction prompt  | Pydantic schema |
+| Room mapping         | `fast-production`    | Two room-name lists                            | Pydantic schema |
+| Line-item matching   | `fast-production`    | JDR + insurance item lists per room group      | Pydantic schema |
+| Comment generation   | `fast-production`    | Matched/unmatched items + context per room     | Pydantic schema |
 
-**Cost control:** Two LLM calls per page (room split + extraction). Embeddings are a single batch call per document. Matching is pure compute (cosine sim + Hungarian algorithm).
+**Cost control:** Two LLM vision calls per page (room split + extraction). One text call each for room mapping and per-room matching. One text call per room for comment generation. Classification is pure deterministic code.
 
 ## 7. Key Design Decisions
 
 - **LLM vision for PDF parsing** — Xactimate PDFs vary in layout; LLM vision handles tables, merged cells, and formatting inconsistencies without brittle heuristics
-- **Per-field bboxes** — Each metadata field (description, qty, unit, price, total) gets its own bbox so the annotation step can highlight specific fields that differ, not just the entire row
+- **Word-level bbox matching** — Uses `get_text("words")` with fuzzy word comparison instead of substring search, achieving 100% description coverage including multi-line wrapped text
 - **Two-phase LLM parsing** — Room splitting first gives the extraction LLM explicit context, ensures consistent room naming across pages, and avoids hallucinated room assignments
-- **Embeddings for matching, code for math** — Embedding similarity + Hungarian algorithm gives fast, deterministic, cheap matching; ±2% numeric comparison stays as code
-- **LLM only where irreplaceable** — Room mapping (fuzzy name resolution with splits/merges) and PDF parsing (vision) are the only LLM calls; everything else is compute
-- **PyMuPDF for annotation** — Preserves original PDF layout; draws colored rectangles precisely using per-field bbox coordinates from parsing
+- **LLM for semantic matching** — Construction item descriptions vary significantly in wording between proposals; LLM matching handles synonyms and reformulations (e.g. "Bathtub - Reset" ↔ "Install Bathtub") that string similarity would miss
+- **Unit-aware classification** — When measurement systems differ (LF vs SF, HR vs EA), quantity and unit_price comparisons are skipped as meaningless; totals are compared instead to assess cost alignment
+- **Deterministic classification** — Color assignment (green/orange) uses code with ±2% numeric tolerance, not LLM judgment, for consistency and auditability
+- **Single color per item** — Each line item gets one highlight color on the description only, avoiding visual noise from per-field multi-color highlights
+- **PyMuPDF for annotation** — Preserves original PDF layout; draws highlight annotations and sticky notes using bbox coordinates from parsing
 - **Background processing** — PDF pipeline takes 30-90s; async avoids request timeouts
 
 ## 8. Tech Stack
 
-- **Backend:** Python with `uv`, FastAPI
-- **Frontend:** TypeScript, React, Vite
-- **State/Data:** React Query
+- **Backend:** Python 3.13 with `uv`, FastAPI, PyMuPDF, Pydantic, OpenAI SDK
+- **Frontend:** TypeScript, React 19, Vite
+- **State/Data:** React Query (TanStack Query)
 - **Styling/UI:** TailwindCSS, shadcn/ui
-- **Validation:** zod (frontend) / Pydantic (backend)
+- **Validation:** Zod (frontend) / Pydantic (backend)
 - **LLM Calls:** Ciridae LLM Gateway (OpenAI-compatible API)
 
 ## 9. Directory Structure
@@ -158,27 +208,34 @@ All calls go through Ciridae Gateway (`https://api.llmgateway.ciridae.app`).
 ```
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI app + routes
-│   │   ├── schemas.py           # Pydantic schemas
-│   │   ├── pipeline/
-│   │   │   ├── parse.py         # PDF extraction (3-phase)
-│   │   │   ├── room_mapping.py  # LLM room mapping
-│   │   │   ├── matching.py      # Semantic matching + classification
-│   │   │   └── annotate.py      # PDF markup generation
-│   │   └── llm.py               # Gateway client wrapper
-│   ├── test_parse.py            # CLI test script for parse pipeline
+│   │   ├── schemas.py              # Pydantic schemas (data model + comparison types)
+│   │   ├── llm.py                  # Gateway client (chat + vision_extract)
+│   │   └── pipeline/
+│   │       ├── parse.py            # PDF extraction (3-phase: rooms → items → bboxes)
+│   │       ├── room_mapping.py     # LLM room mapping
+│   │       ├── matching.py         # LLM semantic matching + deterministic classification
+│   │       └── annotate.py         # PDF markup generation (highlights + LLM comments)
+│   ├── eval_matching.py            # End-to-end eval against ground truth
+│   ├── test_matching.py            # CLI test for full pipeline
+│   ├── test_annotate.py            # Annotation test with cached data
 │   └── pyproject.toml
 ├── frontend/
 │   ├── src/
-│   │   ├── App.tsx
-│   │   ├── components/
-│   │   │   ├── UploadForm.tsx
-│   │   │   ├── JobStatus.tsx
-│   │   │   └── ResultViewer.tsx
-│   │   └── api/                 # React Query hooks
+│   │   ├── App.tsx                 # Root component with state machine
+│   │   ├── api/
+│   │   │   ├── hooks.ts            # React Query hooks (create, poll, items)
+│   │   │   ├── types.ts            # Zod schemas (JobResponse, ItemsResponse)
+│   │   │   └── mock.ts             # Demo mode mock data
+│   │   └── components/
+│   │       ├── UploadForm.tsx       # Dual PDF drag-and-drop
+│   │       ├── JobStatus.tsx        # Processing stage indicator
+│   │       ├── ResultViewer.tsx     # Results with room breakdown
+│   │       ├── Header.tsx           # App header
+│   │       ├── Aurora.tsx           # Background animation
+│   │       └── ui/                  # shadcn/ui primitives
 │   ├── package.json
 │   └── vite.config.ts
-├── documents/                   # Input PDFs (proposal sets)
+├── documents/                       # Input PDFs (proposal sets)
 ├── DESIGN.md
 └── README.md
 ```
