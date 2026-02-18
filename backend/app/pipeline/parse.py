@@ -42,8 +42,11 @@ For each room section, return:
 
 Rules:
 - Subsection headers (WALLS, TRIM/DOORS, FLOORS, CARPET, BATHTUB, MISCELLANEOUS) are NOT rooms.
+- Subrooms, alcoves, or nested sub-areas within a room are NOT separate rooms. They belong to the parent room they open into. Use the parent room name instead.
 - "Main Level", "Debris Removal", "Labor Minimums Applied" are room-level sections.
-- If the page has no room sections (cover page, summary, photos), return an empty list."""
+- If the page has no room sections (cover page, summary, photos), return an empty list.
+- Pages with photos/images of damage, documentation photos, or photo captions are NOT line item pages. Return an empty list for these.
+- A line item page has a structured table with columns like DESCRIPTION, QTY, REPLACE, TOTAL (or QUANTITY, UNIT PRICE, RCV). If you don't see this table structure, return an empty list."""
 
 EXTRACTION_PROMPT_TEMPLATE = """\
 Extract all line items from this Xactimate PDF proposal page.
@@ -70,41 +73,110 @@ def _render_page_b64(page: fitz.Page) -> str:
     return base64.b64encode(pix.tobytes("png")).decode()
 
 
-def _search_text(page: fitz.Page, text: str) -> Bbox | None:
-    """Search for text on page and return its tight bounding box."""
-    results = page.search_for(text)
-    if results:
-        r = results[0]
-        return (r.x0, r.y0, r.x1, r.y1)
-    return None
+def _normalize(text: str) -> str:
+    """Normalize text for matching: lowercase, collapse whitespace, strip punctuation edges."""
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def _words_match(pdf_word: str, target_word: str) -> bool:
+    """Fuzzy word comparison: handles quoting, punctuation, case."""
+    a = pdf_word.lower().strip(".,;:()\"'""''")
+    b = target_word.lower().strip(".,;:()\"'""''")
+    if not a or not b:
+        return False
+    if a == b:
+        return True
+    # Handle curly-quote ↔ straight-quote, fraction chars, etc.
+    a_norm = a.replace("\u201c", '"').replace("\u201d", '"').replace("\u2018", "'").replace("\u2019", "'")
+    b_norm = b.replace("\u201c", '"').replace("\u201d", '"').replace("\u2018", "'").replace("\u2019", "'")
+    if a_norm == b_norm:
+        return True
+    # One is a prefix of the other (handles truncated or merged words)
+    if len(a) >= 3 and len(b) >= 3 and (a.startswith(b) or b.startswith(a)):
+        return True
+    return False
 
 
 def _find_description_bbox(page: fitz.Page, description: str) -> Bbox | None:
-    """Find the description text, trying progressively shorter prefixes."""
+    """Find the full description text using word-level matching.
+
+    Uses get_text("words") to match the description word-by-word,
+    then returns the union bbox covering all matched words (handles
+    multi-line descriptions naturally).
+    """
     text = re.sub(r"^\d+\.\s*", "", description)
-    for length in [60, 40, 25]:
-        query = text[:length].strip()
-        if len(query) < 5:
+    target_words = text.split()
+    if not target_words:
+        return None
+
+    page_words = page.get_text("words")
+    # Each word: (x0, y0, x1, y1, "text", block_no, line_no, word_no)
+
+    min_match = max(2, len(target_words) // 2)
+    best_match: list[tuple] = []
+    best_count = 0
+
+    for i in range(len(page_words)):
+        pw = page_words[i][4]
+        if not _words_match(pw, target_words[0]):
             continue
-        bbox = _search_text(page, query)
-        if bbox:
-            return bbox
-    return None
+
+        # Try to match the word sequence starting here
+        matched = [page_words[i]]
+        ti = 1  # target word index
+        pi = i + 1  # page word index
+        while ti < len(target_words) and pi < len(page_words):
+            pw_next = page_words[pi][4]
+            # Skip if next page-word is too far away (different section)
+            if page_words[pi][1] - page_words[pi - 1][1] > 20:
+                break
+            if _words_match(pw_next, target_words[ti]):
+                matched.append(page_words[pi])
+                ti += 1
+                pi += 1
+            else:
+                # The PDF may split words differently; skip one and try again
+                pi += 1
+                # But don't skip too many
+                if pi - (i + len(matched)) > 3:
+                    break
+
+        if len(matched) > best_count and len(matched) >= min_match:
+            best_count = len(matched)
+            best_match = matched
+
+    if not best_match:
+        # Fallback: use search_for with progressively shorter prefixes
+        for length in [60, 40, 25]:
+            query = text[:length].strip()
+            if len(query) < 5:
+                continue
+            results = page.search_for(query)
+            if results:
+                r = results[0]
+                return (r.x0, r.y0, r.x1, r.y1)
+        return None
+
+    # Union bbox of all matched words
+    x0 = min(w[0] for w in best_match)
+    y0 = min(w[1] for w in best_match)
+    x1 = max(w[2] for w in best_match)
+    y1 = max(w[3] for w in best_match)
+    return (x0, y0, x1, y1)
 
 
 def _find_number_bbox(page: fitz.Page, value: float | None, desc_bbox: Bbox | None) -> Bbox | None:
     """Find a numeric value on the same row as the description."""
     if value is None or desc_bbox is None:
         return None
-    # Try multiple formatting: with commas, without, integer form
     candidates = []
-    candidates.append(f"{value:,.2f}")  # 1,734.96
-    candidates.append(f"{value:.2f}")   # 1734.96
+    candidates.append(f"{value:,.2f}")
+    candidates.append(f"{value:.2f}")
     if value == int(value):
-        candidates.append(f"{int(value):,}")  # 1,735
-        candidates.append(str(int(value)))     # 1735
+        candidates.append(f"{int(value):,}")
+        candidates.append(str(int(value)))
     y_mid = (desc_bbox[1] + desc_bbox[3]) / 2
-    tolerance = 15  # points vertical tolerance for same-row matching
+    tolerance = 15
     for text in candidates:
         results = page.search_for(text)
         for r in results:
@@ -148,7 +220,9 @@ def parse_document(pdf_path: str, source: str) -> ParsedDocument:
     page_rooms: list[list[str]] = []
 
     # Phase 1: Render all pages and identify room sections
-    for page_idx in range(len(doc)):
+    total_pages = len(doc)
+    for page_idx in range(total_pages):
+        print(f"    [{source}] room-split page {page_idx+1}/{total_pages}", flush=True)
         image_b64 = _render_page_b64(doc[page_idx])
         page_images.append(image_b64)
 
@@ -158,10 +232,11 @@ def parse_document(pdf_path: str, source: str) -> ParsedDocument:
 
     # Phase 2: Extract line items from pages that have rooms
     rooms_dict: dict[str, list[ExtractedLineItem]] = {}
+    content_pages = [i for i, r in enumerate(page_rooms) if r]
 
-    for page_idx, rooms in enumerate(page_rooms):
-        if not rooms:
-            continue
+    for step, page_idx in enumerate(content_pages):
+        rooms = page_rooms[page_idx]
+        print(f"    [{source}] extract page {page_idx+1} ({step+1}/{len(content_pages)})", flush=True)
 
         rooms_str = ", ".join(rooms)
         prompt = EXTRACTION_PROMPT_TEMPLATE.format(rooms=rooms_str)
@@ -169,7 +244,10 @@ def parse_document(pdf_path: str, source: str) -> ParsedDocument:
 
         page = doc[page_idx]
         for item in result.line_items:
-            bboxes = _locate_bboxes(page, item)
+            # Filter out items with no pricing data (e.g. photo captions)
+            if item.quantity is None and item.unit_price is None and item.total is None:
+                continue
+            bboxes = _locate_bboxes(page, item) if source == "jdr" else LineItemBboxes()
             extracted = ExtractedLineItem(
                 description=item.description,
                 quantity=item.quantity,

@@ -11,6 +11,18 @@ client = OpenAI(
 )
 
 
+def chat(system: str, user: str, response_model: type, model: str = "fast-production"):
+    completion = client.chat.completions.parse(
+        model=model,
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        response_format=response_model,
+    )
+    return completion.choices[0].message.parsed
+
+
 def vision_extract(image_b64: str, response_model: type, system_prompt: str, model: str = "claude-3-7-sonnet"):
     completion = client.chat.completions.parse(
         model=model,
@@ -27,3 +39,5 @@ def vision_extract(image_b64: str, response_model: type, system_prompt: str, mod
         response_format=response_model,
     )
     return completion.choices[0].message.parsed
+
+
