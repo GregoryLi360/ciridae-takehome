@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
 
 from pydantic import BaseModel
@@ -13,6 +14,8 @@ from ..schemas import (
     RoomComparison,
 )
 from .room_mapping import RoomGroup, map_rooms
+
+_LLM_POOL = ThreadPoolExecutor(max_workers=8)
 
 
 class _ItemMatch(BaseModel):
@@ -126,26 +129,25 @@ def compare_documents(jdr: ParsedDocument, ins: ParsedDocument) -> ComparisonRes
     jdr_rooms = {r.room_name: r for r in jdr.rooms}
     ins_rooms = {r.room_name: r for r in ins.rooms}
 
-    comparisons: list[RoomComparison] = []
-    for group in room_groups:
+    def _process_group(group: RoomGroup) -> RoomComparison:
         group_jdr_items: list[ExtractedLineItem] = []
-        for rn in group.jdr_rooms:
-            if rn in jdr_rooms:
-                group_jdr_items.extend(jdr_rooms[rn].line_items)
+        if group.jdr_room and group.jdr_room in jdr_rooms:
+            group_jdr_items = list(jdr_rooms[group.jdr_room].line_items)
 
         group_ins_items: list[ExtractedLineItem] = []
-        for rn in group.ins_rooms:
-            if rn in ins_rooms:
-                group_ins_items.extend(ins_rooms[rn].line_items)
+        if group.ins_room and group.ins_room in ins_rooms:
+            group_ins_items = list(ins_rooms[group.ins_room].line_items)
 
         matched, unmatched_jdr, unmatched_ins = _match_room_items(group_jdr_items, group_ins_items)
 
-        comparisons.append(RoomComparison(
-            jdr_rooms=group.jdr_rooms,
-            ins_rooms=group.ins_rooms,
+        return RoomComparison(
+            jdr_room=group.jdr_room,
+            ins_room=group.ins_room,
             matched=matched,
             unmatched_jdr=unmatched_jdr,
             unmatched_ins=unmatched_ins,
-        ))
+        )
+
+    comparisons = list(_LLM_POOL.map(_process_group, room_groups))
 
     return ComparisonResult(rooms=comparisons)

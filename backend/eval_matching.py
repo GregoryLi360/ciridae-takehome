@@ -177,7 +177,7 @@ def stage_eval():
     # Collect pipeline JDR items
     pipe_items: list[tuple[str, str, str]] = []
     for room in result.rooms:
-        label = "/".join(room.jdr_rooms)
+        label = room.jdr_room or "(none)"
         for pair in room.matched:
             pipe_items.append((pair.jdr_item.description, pair.color.value, label))
         for item in room.unmatched_jdr:

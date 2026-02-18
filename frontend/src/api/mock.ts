@@ -16,8 +16,8 @@ export const MOCK_JOB_COMPLETE: JobResponse = {
 export const MOCK_ITEMS: ItemsResponse = {
   rooms: [
     {
-      jdr_rooms: ["Bathroom"],
-      ins_rooms: ["Hall Bathroom"],
+      jdr_room: "Bathroom",
+      ins_room: "Hall Bathroom",
       matched: [
         {
           jdr_item: {
@@ -102,8 +102,8 @@ export const MOCK_ITEMS: ItemsResponse = {
       ],
     },
     {
-      jdr_rooms: ["Laundry Room"],
-      ins_rooms: ["Laundry Room"],
+      jdr_room: "Laundry Room",
+      ins_room: "Laundry Room",
       matched: [
         {
           jdr_item: {
@@ -145,8 +145,8 @@ export const MOCK_ITEMS: ItemsResponse = {
       ],
     },
     {
-      jdr_rooms: ["Garage"],
-      ins_rooms: ["Garage"],
+      jdr_room: "Garage",
+      ins_room: "Garage",
       matched: [
         {
           jdr_item: {
@@ -171,8 +171,8 @@ export const MOCK_ITEMS: ItemsResponse = {
       ],
     },
     {
-      jdr_rooms: ["Bedroom 1"],
-      ins_rooms: ["Bedroom"],
+      jdr_room: "Bedroom 1",
+      ins_room: "Bedroom",
       matched: [
         {
           jdr_item: {
@@ -213,8 +213,8 @@ export const MOCK_ITEMS: ItemsResponse = {
       ],
     },
     {
-      jdr_rooms: ["Living Room"],
-      ins_rooms: ["Living Room"],
+      jdr_room: "Living Room",
+      ins_room: "Living Room",
       matched: [
         {
           jdr_item: {
@@ -257,8 +257,8 @@ export const MOCK_ITEMS: ItemsResponse = {
       ],
     },
     {
-      jdr_rooms: ["Formal Dining Room"],
-      ins_rooms: ["Dining Room"],
+      jdr_room: "Formal Dining Room",
+      ins_room: "Dining Room",
       matched: [
         {
           jdr_item: {

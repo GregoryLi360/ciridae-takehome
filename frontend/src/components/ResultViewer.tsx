@@ -68,8 +68,8 @@ function RoomSection({
   index: number;
 }) {
   const [open, setOpen] = useState(index === 0);
-  const jdrLabel = room.jdr_rooms.join(", ") || "\u2014";
-  const insLabel = room.ins_rooms.join(", ") || "\u2014";
+  const jdrLabel = room.jdr_room ?? "\u2014";
+  const insLabel = room.ins_room ?? "\u2014";
   const total =
     room.matched.length + room.unmatched_jdr.length + room.unmatched_ins.length;
 

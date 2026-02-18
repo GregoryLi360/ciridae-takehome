@@ -1,11 +1,14 @@
 import base64
 import re
+from concurrent.futures import ThreadPoolExecutor
 
 import fitz
 from pydantic import BaseModel
 
 from ..llm import vision_extract
 from ..schemas import Bbox, ExtractedLineItem, ExtractedRoom, LineItemBboxes, ParsedDocument
+
+_LLM_POOL = ThreadPoolExecutor(max_workers=8)
 
 
 # --- LLM response models ---
@@ -97,13 +100,31 @@ def _words_match(pdf_word: str, target_word: str) -> bool:
     return False
 
 
-def _find_description_bbox(page: fitz.Page, description: str) -> Bbox | None:
+def _overlaps_claimed(bbox: Bbox, claimed: list[Bbox]) -> bool:
+    """Check if a bbox vertically overlaps any already-claimed bbox."""
+    for c in claimed:
+        # Two rects overlap vertically if neither is fully above/below the other
+        if bbox[1] < c[3] and bbox[3] > c[1]:
+            return True
+    return False
+
+
+def _find_description_bbox(
+    page: fitz.Page, description: str, claimed: list[Bbox] | None = None,
+) -> Bbox | None:
     """Find the full description text using word-level matching.
 
     Uses get_text("words") to match the description word-by-word,
     then returns the union bbox covering all matched words (handles
     multi-line descriptions naturally).
+
+    ``claimed`` is a list of bboxes already assigned to other items on
+    this page — matches that overlap a claimed region are skipped so
+    that each item highlights a unique location.
     """
+    if claimed is None:
+        claimed = []
+
     text = re.sub(r"^\d+\.\s*", "", description)
     target_words = text.split()
     if not target_words:
@@ -142,27 +163,34 @@ def _find_description_bbox(page: fitz.Page, description: str) -> Bbox | None:
                     break
 
         if len(matched) > best_count and len(matched) >= min_match:
-            best_count = len(matched)
-            best_match = matched
+            candidate = (
+                min(w[0] for w in matched),
+                min(w[1] for w in matched),
+                max(w[2] for w in matched),
+                max(w[3] for w in matched),
+            )
+            if not _overlaps_claimed(candidate, claimed):
+                best_count = len(matched)
+                best_match = matched
 
-    if not best_match:
-        # Fallback: use search_for with progressively shorter prefixes
-        for length in [60, 40, 25]:
-            query = text[:length].strip()
-            if len(query) < 5:
-                continue
-            results = page.search_for(query)
-            if results:
-                r = results[0]
-                return (r.x0, r.y0, r.x1, r.y1)
-        return None
+    if best_match:
+        x0 = min(w[0] for w in best_match)
+        y0 = min(w[1] for w in best_match)
+        x1 = max(w[2] for w in best_match)
+        y1 = max(w[3] for w in best_match)
+        return (x0, y0, x1, y1)
 
-    # Union bbox of all matched words
-    x0 = min(w[0] for w in best_match)
-    y0 = min(w[1] for w in best_match)
-    x1 = max(w[2] for w in best_match)
-    y1 = max(w[3] for w in best_match)
-    return (x0, y0, x1, y1)
+    # Fallback: use search_for with progressively shorter prefixes
+    for length in [60, 40, 25]:
+        query = text[:length].strip()
+        if len(query) < 5:
+            continue
+        results = page.search_for(query)
+        for r in results:
+            candidate = (r.x0, r.y0, r.x1, r.y1)
+            if not _overlaps_claimed(candidate, claimed):
+                return candidate
+    return None
 
 
 def _find_number_bbox(page: fitz.Page, value: float | None, desc_bbox: Bbox | None) -> Bbox | None:
@@ -200,9 +228,9 @@ def _find_unit_bbox(page: fitz.Page, unit: str | None, desc_bbox: Bbox | None) -
     return None
 
 
-def _locate_bboxes(page: fitz.Page, item) -> LineItemBboxes:
+def _locate_bboxes(page: fitz.Page, item, claimed: list[Bbox] | None = None) -> LineItemBboxes:
     """Locate per-field bounding boxes for a line item."""
-    desc_bbox = _find_description_bbox(page, item.description)
+    desc_bbox = _find_description_bbox(page, item.description, claimed)
     return LineItemBboxes(
         description=desc_bbox,
         quantity=_find_number_bbox(page, item.quantity, desc_bbox),
@@ -216,38 +244,46 @@ def _locate_bboxes(page: fitz.Page, item) -> LineItemBboxes:
 
 def parse_document(pdf_path: str, source: str) -> ParsedDocument:
     doc = fitz.open(pdf_path)
-    page_images: list[str] = []
-    page_rooms: list[list[str]] = []
-
-    # Phase 1: Render all pages and identify room sections
     total_pages = len(doc)
-    for page_idx in range(total_pages):
+
+    # Phase 1: Pre-render all pages (sequential — fitz not thread-safe)
+    page_images = [_render_page_b64(doc[i]) for i in range(total_pages)]
+
+    # Phase 2: Room-split (parallel LLM calls)
+    def _room_split(page_idx: int) -> list[str]:
         print(f"    [{source}] room-split page {page_idx+1}/{total_pages}", flush=True)
-        image_b64 = _render_page_b64(doc[page_idx])
-        page_images.append(image_b64)
+        result = vision_extract(page_images[page_idx], _PageRooms, ROOM_SPLIT_PROMPT)
+        return [r.room_name for r in result.rooms]
 
-        result = vision_extract(image_b64, _PageRooms, ROOM_SPLIT_PROMPT)
-        rooms = [r.room_name for r in result.rooms]
-        page_rooms.append(rooms)
+    page_rooms = list(_LLM_POOL.map(_room_split, range(total_pages)))
 
-    # Phase 2: Extract line items from pages that have rooms
-    rooms_dict: dict[str, list[ExtractedLineItem]] = {}
+    # Phase 3: Extract line items (parallel LLM calls, then sequential bbox location)
     content_pages = [i for i, r in enumerate(page_rooms) if r]
 
-    for step, page_idx in enumerate(content_pages):
+    def _extract(page_idx: int) -> tuple[int, list[str], _LLMPageItems]:
         rooms = page_rooms[page_idx]
+        step = content_pages.index(page_idx)
         print(f"    [{source}] extract page {page_idx+1} ({step+1}/{len(content_pages)})", flush=True)
+        prompt = EXTRACTION_PROMPT_TEMPLATE.format(rooms=", ".join(rooms))
+        return page_idx, rooms, vision_extract(page_images[page_idx], _LLMPageItems, prompt)
 
-        rooms_str = ", ".join(rooms)
-        prompt = EXTRACTION_PROMPT_TEMPLATE.format(rooms=rooms_str)
-        result = vision_extract(page_images[page_idx], _LLMPageItems, prompt)
+    extraction_results = list(_LLM_POOL.map(_extract, content_pages))
 
+    # Sequential bbox location (uses fitz Page objects)
+    rooms_dict: dict[str, list[ExtractedLineItem]] = {}
+    claimed_bboxes: dict[int, list[Bbox]] = {}  # page_idx -> claimed description bboxes
+    for page_idx, rooms, result in extraction_results:
         page = doc[page_idx]
         for item in result.line_items:
-            # Filter out items with no pricing data (e.g. photo captions)
             if item.quantity is None and item.unit_price is None and item.total is None:
                 continue
-            bboxes = _locate_bboxes(page, item) if source == "jdr" else LineItemBboxes()
+            if source == "jdr":
+                claimed = claimed_bboxes.setdefault(page_idx, [])
+                bboxes = _locate_bboxes(page, item, claimed)
+                if bboxes.description:
+                    claimed.append(bboxes.description)
+            else:
+                bboxes = LineItemBboxes()
             extracted = ExtractedLineItem(
                 description=item.description,
                 quantity=item.quantity,

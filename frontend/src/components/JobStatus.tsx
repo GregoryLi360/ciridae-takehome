@@ -4,8 +4,7 @@ import type { JobResponse } from "@/api/types";
 
 const STAGE_LABELS: Record<string, string> = {
   pending: "Queued",
-  parsing_jdr: "Parsing JDR proposal",
-  parsing_insurance: "Parsing insurance estimate",
+  parsing: "Parsing documents",
   matching: "Matching line items",
   annotating: "Generating annotated PDF",
   complete: "Complete",
@@ -13,8 +12,7 @@ const STAGE_LABELS: Record<string, string> = {
 };
 
 const STAGE_ORDER = [
-  "parsing_jdr",
-  "parsing_insurance",
+  "parsing",
   "matching",
   "annotating",
   "complete",

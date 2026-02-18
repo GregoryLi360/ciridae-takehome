@@ -55,7 +55,7 @@ Three-phase hybrid approach:
 
 ### Step 2 — Room Mapping (`room_mapping.py`)
 
-Single LLM call (`fast-production`) with both room name lists. Groups rooms that refer to the same physical space (e.g. "Bathroom" ↔ "Hall Bathroom", "Bedroom 1" ↔ "Bedroom"). Handles splits, merges, and naming variations. Rooms with no counterpart get a group with an empty list on the other side.
+Single LLM call (`fast-production`) with both room name lists. Pairs rooms 1:1 that refer to the same physical space (e.g. "Bathroom" ↔ "Hall Bathroom", "Bedroom 1" ↔ "Bedroom"). Handles naming variations. Rooms with no counterpart are included alone with `null` for the missing side.
 
 ### Step 3 — Line-Item Matching (`matching.py`)
 

@@ -5,7 +5,7 @@ adds sticky-note annotations with LLM-generated rationale, and appends
 summary pages for insurance-only (nugget) items.
 """
 
-import re
+from concurrent.futures import ThreadPoolExecutor
 
 import fitz
 from pydantic import BaseModel
@@ -19,12 +19,13 @@ from ..schemas import (
     RoomComparison,
 )
 
+_LLM_POOL = ThreadPoolExecutor(max_workers=8)
+
 # Highlight colors (RGB 0-1) — match the ground truth markup palette
 HIGHLIGHT_COLORS: dict[MatchColor, tuple[float, float, float]] = {
     MatchColor.GREEN: (0.0, 1.0, 0.0),       # #00ff00
     MatchColor.ORANGE: (1.0, 0.5, 0.0),       # #ff7f00
     MatchColor.BLUE: (0.5, 0.8, 1.0),         # #7fccff  (sky blue)
-    MatchColor.NUGGET: (0.75, 0.52, 1.0),     # purple
 }
 
 
@@ -82,7 +83,9 @@ def _generate_comments(room: RoomComparison) -> list[str]:
         f"  - {_format_item(item)}" for item in room.unmatched_ins
     ) or "(none)"
 
-    room_label = f"JDR rooms: {', '.join(room.jdr_rooms)} ↔ Insurance rooms: {', '.join(room.ins_rooms)}"
+    jdr_label = room.jdr_room or "(none)"
+    ins_label = room.ins_room or "(none)"
+    room_label = f"JDR: {jdr_label} ↔ Insurance: {ins_label}"
 
     user_msg = (
         f"Room: {room_label}\n\n"
@@ -182,65 +185,32 @@ def _annotate_item(
         _add_note(page, fitz.Point(first.x1 + 2, first.y0), comment)
 
 
-def _append_nugget_summary(
-    doc: fitz.Document,
-    nugget_groups: list[tuple[list[str], list[str], list[ExtractedLineItem]]],
+def _last_jdr_page(room: RoomComparison) -> int | None:
+    """Return the 0-based page index of the last JDR item in a room."""
+    pages: list[int] = []
+    for pair in room.matched:
+        pages.append(pair.jdr_item.page_number)
+    for item in room.unmatched_jdr:
+        pages.append(item.page_number)
+    return max(pages) - 1 if pages else None
+
+
+def _add_nugget_notes(
+    page: fitz.Page,
+    items: list[ExtractedLineItem],
 ) -> None:
-    """Append summary page(s) listing insurance-only items by room."""
-    W, H = 612, 792  # Letter size
-    MARGIN = 50
-    LINE_H = 14
-
-    page = doc.new_page(width=W, height=H)
-    y = MARGIN
-
-    # Title
-    page.insert_text(
-        fitz.Point(MARGIN, y + 18),
-        "Insurance-Only Items (Not in JDR Proposal)",
-        fontsize=14,
-        fontname="hebo",
-        color=(0.5, 0.3, 0.8),
-    )
-    y += 40
-
-    for jdr_rooms, ins_rooms, items in nugget_groups:
-        if y > H - MARGIN - 40:
-            page = doc.new_page(width=W, height=H)
-            y = MARGIN
-
-        room_label = ", ".join(ins_rooms) or ", ".join(jdr_rooms)
-        page.insert_text(
-            fitz.Point(MARGIN, y + LINE_H),
-            room_label,
-            fontsize=11,
-            fontname="hebo",
-            color=(0.2, 0.2, 0.2),
-        )
-        y += LINE_H + 8
-
-        for item in items:
-            if y > H - MARGIN:
-                page = doc.new_page(width=W, height=H)
-                y = MARGIN
-
-            total_str = f"${float(item.total):,.2f}" if item.total else "—"
-            qty_str = f"{item.quantity} {item.unit or ''}" if item.quantity else ""
-            text = f"  {item.description}"
-            if qty_str:
-                text += f"  [{qty_str}]"
-            text += f"  {total_str}"
-
-            page.insert_text(
-                fitz.Point(MARGIN + 10, y + LINE_H),
-                text,
-                fontsize=9,
-                fontname="helv",
-                color=(0.3, 0.3, 0.3),
-            )
-            y += LINE_H + 3
-
-        y += 12
+    """Place sticky-note annotations for insurance-only items at the page bottom-right."""
+    x = page.rect.width - 40
+    y = page.rect.height - 50
+    for item in reversed(items):
+        total_str = f"${float(item.total):,.2f}" if item.total else "—"
+        qty_str = f"{item.quantity} {item.unit or ''}" if item.quantity else ""
+        text = f"[Insurance only] {item.description}"
+        if qty_str:
+            text += f"\nQty: {qty_str}"
+        text += f"\nTotal: {total_str}"
+        _add_note(page, fitz.Point(x, y), text)
+        y -= 20
 
 
 def annotate_pdf(
@@ -251,24 +221,41 @@ def annotate_pdf(
     """Generate an annotated copy of the JDR PDF with comparison highlights.
 
     - GREEN highlights: exact match with insurance
-    - ORANGE highlights: matched but with field differences (differing fields also highlighted)
+    - ORANGE highlights: matched but with field differences
     - BLUE highlights: JDR only, no insurance match
-    - Summary page(s): insurance-only (nugget) items listed by room
+    - Nugget sticky notes: insurance-only items placed at bottom-right of
+      each room's last JDR page (no highlights)
     """
     doc = fitz.open(jdr_pdf_path)
 
-    nugget_groups: list[tuple[list[str], list[str], list[ExtractedLineItem]]] = []
+    # Step 1: Parallel comment generation (LLM calls, no fitz)
+    rooms_with_items: list[tuple[int, RoomComparison]] = []
+    for i, room in enumerate(result.rooms):
+        n_items = len(room.matched) + len(room.unmatched_jdr)
+        if n_items > 0:
+            rooms_with_items.append((i, room))
 
+    def _gen_comments(args: tuple[int, RoomComparison]) -> list[str]:
+        _, room = args
+        room_label = room.jdr_room or "(none)"
+        n_items = len(room.matched) + len(room.unmatched_jdr)
+        print(f"  Generating comments for {room_label} ({n_items} items)...", flush=True)
+        return _generate_comments(room)
+
+    all_comments = list(_LLM_POOL.map(_gen_comments, rooms_with_items))
+    comments_by_idx = {i: c for (i, _), c in zip(rooms_with_items, all_comments)}
+
+    # Step 2: Sequential highlight application (fitz not thread-safe)
     for room_idx, room in enumerate(result.rooms):
-        room_label = ", ".join(room.jdr_rooms)
         n_items = len(room.matched) + len(room.unmatched_jdr)
         if n_items == 0:
+            # Room has only insurance items — place nugget notes on the
+            # first page as a fallback (rare with 1:1 mapping).
             if room.unmatched_ins:
-                nugget_groups.append((room.jdr_rooms, room.ins_rooms, room.unmatched_ins))
+                _add_nugget_notes(doc[0], room.unmatched_ins)
             continue
 
-        print(f"  Generating comments for {room_label} ({n_items} items)...", flush=True)
-        comments = _generate_comments(room)
+        comments = comments_by_idx.get(room_idx, [])
 
         for i, pair in enumerate(room.matched):
             page_idx = pair.jdr_item.page_number - 1
@@ -288,10 +275,9 @@ def annotate_pdf(
                 )
 
         if room.unmatched_ins:
-            nugget_groups.append((room.jdr_rooms, room.ins_rooms, room.unmatched_ins))
-
-    if nugget_groups:
-        _append_nugget_summary(doc, nugget_groups)
+            page_idx = _last_jdr_page(room)
+            if page_idx is not None and 0 <= page_idx < len(doc):
+                _add_nugget_notes(doc[page_idx], room.unmatched_ins)
 
     doc.save(output_path)
     doc.close()

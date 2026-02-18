@@ -56,8 +56,8 @@ class MatchedPair(BaseModel):
 
 
 class RoomComparison(BaseModel):
-    jdr_rooms: list[str]
-    ins_rooms: list[str]
+    jdr_room: str | None = None
+    ins_room: str | None = None
     matched: list[MatchedPair] = []
     unmatched_jdr: list[ExtractedLineItem] = []
     unmatched_ins: list[ExtractedLineItem] = []

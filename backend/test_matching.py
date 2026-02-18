@@ -20,7 +20,7 @@ result = compare_documents(jdr, ins)
 COLOR_SYMBOLS = {"green": "G", "orange": "O", "blue": "B", "nugget": "N"}
 
 for room in result.rooms:
-    label = f"JDR:{room.jdr_rooms} <-> INS:{room.ins_rooms}"
+    label = f"JDR:{room.jdr_room} <-> INS:{room.ins_room}"
     matched_count = len(room.matched)
     blue_count = len(room.unmatched_jdr)
     nugget_count = len(room.unmatched_ins)

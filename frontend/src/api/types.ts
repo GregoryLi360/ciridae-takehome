@@ -1,65 +1,56 @@
-import { z } from "zod";
+export type JobStatus =
+  | "pending"
+  | "parsing"
+  | "matching"
+  | "annotating"
+  | "complete"
+  | "error";
 
-export const JobStatus = z.enum([
-  "pending",
-  "parsing_jdr",
-  "parsing_insurance",
-  "matching",
-  "annotating",
-  "complete",
-  "error",
-]);
-export type JobStatus = z.infer<typeof JobStatus>;
+export interface JobResponse {
+  id: string;
+  status: JobStatus;
+  progress?: string;
+  summary?: {
+    total_jdr_items: number;
+    total_ins_items: number;
+    matched_green: number;
+    matched_orange: number;
+    unmatched_blue: number;
+    unmatched_nugget: number;
+  };
+  error?: string;
+}
 
-export const JobResponse = z.object({
-  id: z.string(),
-  status: JobStatus,
-  progress: z.string().optional(),
-  summary: z
-    .object({
-      total_jdr_items: z.number(),
-      total_ins_items: z.number(),
-      matched_green: z.number(),
-      matched_orange: z.number(),
-      unmatched_blue: z.number(),
-      unmatched_nugget: z.number(),
-    })
-    .optional(),
-  error: z.string().optional(),
-});
-export type JobResponse = z.infer<typeof JobResponse>;
+export interface LineItem {
+  description: string;
+  quantity: number | null;
+  unit: string | null;
+  unit_price: number | null;
+  total: number | null;
+  page_number: number;
+}
 
-export const LineItem = z.object({
-  description: z.string(),
-  quantity: z.number().nullable(),
-  unit: z.string().nullable(),
-  unit_price: z.number().nullable(),
-  total: z.number().nullable(),
-  page_number: z.number(),
-});
+export interface DiffNote {
+  field: string;
+  jdr_value: string;
+  ins_value: string;
+}
 
-export const MatchedPair = z.object({
-  jdr_item: LineItem,
-  ins_item: LineItem,
-  color: z.enum(["green", "orange"]),
-  diff_notes: z.array(
-    z.object({
-      field: z.string(),
-      jdr_value: z.string(),
-      ins_value: z.string(),
-    })
-  ),
-});
+export interface MatchedPair {
+  jdr_item: LineItem;
+  ins_item: LineItem;
+  color: "green" | "orange";
+  diff_notes: DiffNote[];
+}
 
-export const RoomComparison = z.object({
-  jdr_rooms: z.array(z.string()),
-  ins_rooms: z.array(z.string()),
-  matched: z.array(MatchedPair),
-  unmatched_jdr: z.array(LineItem),
-  unmatched_ins: z.array(LineItem),
-});
+export interface RoomComparison {
+  jdr_room: string | null;
+  ins_room: string | null;
+  matched: MatchedPair[];
+  unmatched_jdr: LineItem[];
+  unmatched_ins: LineItem[];
+}
 
-export const ItemsResponse = z.object({
-  rooms: z.array(RoomComparison),
-});
-export type ItemsResponse = z.infer<typeof ItemsResponse>;
+export interface ItemsResponse {
+  rooms: RoomComparison[];
+}

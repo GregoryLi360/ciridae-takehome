@@ -64,8 +64,8 @@ class MatchedPair(BaseModel):
     diff_notes: list[DiffNote]
 
 class RoomComparison(BaseModel):
-    jdr_rooms: list[str]
-    ins_rooms: list[str]
+    jdr_room: str | None = None
+    ins_room: str | None = None
     matched: list[MatchedPair]
     unmatched_jdr: list[ExtractedLineItem]   # BLUE
     unmatched_ins: list[ExtractedLineItem]   # NUGGET
@@ -101,16 +101,17 @@ Each field gets its own tight `(x0, y0, x1, y1)` bbox. Insurance items skip bbox
 
 ### Step 2 — Room Mapping (LLM)
 
-- Single LLM call (`fast-production`) with both room lists → returns grouped mapping via Pydantic structured output:
+- Single LLM call (`fast-production`) with both room lists → returns 1:1 pairs via Pydantic structured output:
   ```json
   [
-    {"jdr_rooms": ["Kitchen", "Breakfast Area"], "ins_rooms": ["Kitchen Area"]},
-    {"jdr_rooms": ["Master Bedroom"], "ins_rooms": ["Bedroom 1"]}
+    {"jdr_room": "Kitchen", "ins_room": "Kitchen Area"},
+    {"jdr_room": "Master Bedroom", "ins_room": "Bedroom 1"},
+    {"jdr_room": "Garage", "ins_room": null}
   ]
   ```
-- Handles splits/merges and naming variations
-- Rooms with no counterpart get a group with an empty list on the other side
-- Every room from both lists appears in exactly one group
+- Pairs rooms 1:1 that refer to the same physical space; handles naming variations
+- Rooms with no counterpart are included alone with `null` for the missing side
+- Every room from both lists appears in exactly one pair
 
 ### Step 3 — Line-Item Matching + Classification (LLM + Code)
 

@@ -5,7 +5,7 @@ import sys
 
 import fitz
 
-from app.schemas import ComparisonResult, LineItemBboxes
+from app.schemas import Bbox, ComparisonResult, LineItemBboxes
 from app.pipeline.parse import _locate_bboxes
 from app.pipeline.annotate import annotate_pdf
 
@@ -37,21 +37,28 @@ class _FakeItem:
 
 found = 0
 total = 0
+claimed_bboxes: dict[int, list[Bbox]] = {}
 for room in result.rooms:
     for pair in room.matched:
         item = pair.jdr_item
         total += 1
-        page = doc[item.page_number - 1]
-        new_bboxes = _locate_bboxes(page, _FakeItem(item))
+        page_idx = item.page_number - 1
+        page = doc[page_idx]
+        claimed = claimed_bboxes.setdefault(page_idx, [])
+        new_bboxes = _locate_bboxes(page, _FakeItem(item), claimed)
         if new_bboxes.description:
             found += 1
+            claimed.append(new_bboxes.description)
         item.bboxes = new_bboxes
     for item in room.unmatched_jdr:
         total += 1
-        page = doc[item.page_number - 1]
-        new_bboxes = _locate_bboxes(page, _FakeItem(item))
+        page_idx = item.page_number - 1
+        page = doc[page_idx]
+        claimed = claimed_bboxes.setdefault(page_idx, [])
+        new_bboxes = _locate_bboxes(page, _FakeItem(item), claimed)
         if new_bboxes.description:
             found += 1
+            claimed.append(new_bboxes.description)
         item.bboxes = new_bboxes
 
 doc.close()

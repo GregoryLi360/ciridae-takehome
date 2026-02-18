@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { JobResponse, ItemsResponse } from "./types";
+import type { JobResponse, ItemsResponse } from "./types";
 
 async function createJob(files: { jdr: File; insurance: File }) {
   const form = new FormData();
@@ -7,7 +7,7 @@ async function createJob(files: { jdr: File; insurance: File }) {
   form.append("insurance", files.insurance);
   const res = await fetch("/api/jobs", { method: "POST", body: form });
   if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
-  return JobResponse.parse(await res.json());
+  return (await res.json()) as JobResponse;
 }
 
 export function useCreateJob() {
@@ -20,7 +20,7 @@ export function useJobStatus(jobId: string | null) {
     queryFn: async () => {
       const res = await fetch(`/api/jobs/${jobId}`);
       if (!res.ok) throw new Error(`Poll failed: ${res.status}`);
-      return JobResponse.parse(await res.json());
+      return (await res.json()) as JobResponse;
     },
     enabled: !!jobId,
     refetchInterval: (query) => {
@@ -37,7 +37,7 @@ export function useJobItems(jobId: string | null, enabled: boolean) {
     queryFn: async () => {
       const res = await fetch(`/api/jobs/${jobId}/items`);
       if (!res.ok) throw new Error(`Items failed: ${res.status}`);
-      return ItemsResponse.parse(await res.json());
+      return (await res.json()) as ItemsResponse;
     },
     enabled: !!jobId && enabled,
   });

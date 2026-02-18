@@ -22,8 +22,7 @@ app = FastAPI()
 
 STATUS_ORDER = [
     "pending",
-    "parsing_jdr",
-    "parsing_insurance",
+    "parsing",
     "matching",
     "annotating",
     "complete",
@@ -96,11 +95,11 @@ def _job_response(job: Job) -> dict:
 
 async def _run_pipeline(job: Job) -> None:
     try:
-        job.status = "parsing_jdr"
-        jdr_doc = await asyncio.to_thread(parse_document, job.jdr_path, "jdr")
-
-        job.status = "parsing_insurance"
-        ins_doc = await asyncio.to_thread(parse_document, job.ins_path, "insurance")
+        job.status = "parsing"
+        jdr_doc, ins_doc = await asyncio.gather(
+            asyncio.to_thread(parse_document, job.jdr_path, "jdr"),
+            asyncio.to_thread(parse_document, job.ins_path, "insurance"),
+        )
 
         job.status = "matching"
         result = await asyncio.to_thread(compare_documents, jdr_doc, ins_doc)
@@ -163,7 +162,7 @@ async def get_job_items(job_id: str) -> dict:
         raise HTTPException(status_code=409, detail=job.error)
     if job.status != "complete" or job.result is None:
         raise HTTPException(status_code=409, detail="Job not complete")
-    return job.result.model_dump(mode="json")
+    return job.result.model_dump()
 
 
 @app.get("/api/jobs/{job_id}/result")
