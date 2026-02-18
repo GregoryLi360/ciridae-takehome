@@ -48,14 +48,21 @@ def _within_tolerance(a: Decimal | None, b: Decimal | None, pct: float = 0.02) -
 def _classify_pair(jdr: ExtractedLineItem, ins: ExtractedLineItem) -> tuple[MatchColor, list[DiffNote]]:
     diffs: list[DiffNote] = []
 
-    if (jdr.unit or "").strip().upper() != (ins.unit or "").strip().upper():
+    units_match = (jdr.unit or "").strip().upper() == (ins.unit or "").strip().upper()
+
+    if not units_match:
+        # Units differ — quantity and unit_price are incomparable across
+        # different measurement systems (e.g. LF vs SF, HR vs EA).
+        # Flag the unit difference and compare totals instead.
         diffs.append(DiffNote(field="unit", jdr_value=str(jdr.unit or ""), ins_value=str(ins.unit or "")))
+        if not _within_tolerance(jdr.total, ins.total):
+            diffs.append(DiffNote(field="total", jdr_value=str(jdr.total or ""), ins_value=str(ins.total or "")))
+    else:
+        if not _within_tolerance(jdr.quantity, ins.quantity):
+            diffs.append(DiffNote(field="quantity", jdr_value=str(jdr.quantity or ""), ins_value=str(ins.quantity or "")))
 
-    if not _within_tolerance(jdr.quantity, ins.quantity):
-        diffs.append(DiffNote(field="quantity", jdr_value=str(jdr.quantity or ""), ins_value=str(ins.quantity or "")))
-
-    if not _within_tolerance(jdr.unit_price, ins.unit_price):
-        diffs.append(DiffNote(field="unit_price", jdr_value=str(jdr.unit_price or ""), ins_value=str(ins.unit_price or "")))
+        if not _within_tolerance(jdr.unit_price, ins.unit_price):
+            diffs.append(DiffNote(field="unit_price", jdr_value=str(jdr.unit_price or ""), ins_value=str(ins.unit_price or "")))
 
     color = MatchColor.GREEN if not diffs else MatchColor.ORANGE
     return color, diffs
