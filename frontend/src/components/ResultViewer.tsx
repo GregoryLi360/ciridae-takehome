@@ -307,9 +307,24 @@ export default function ResultViewer({ job, items }: Props) {
           </p>
           {items ? (
             <div className="space-y-3">
-              {items.rooms.map((room, i) => (
-                <RoomSection key={i} room={room} index={i} />
-              ))}
+              {[...items.rooms]
+                .map((room, i) => ({ room, orig: i }))
+                .sort((a, b) => {
+                  // Group: matched first, then JDR-only, then insurance-only
+                  // Preserve original order within each group
+                  const group = (r: typeof a.room) => {
+                    if (r.matched.length > 0) return 0;
+                    if (r.unmatched_jdr.length > 0) return 1;
+                    return 2;
+                  };
+                  const ga = group(a.room);
+                  const gb = group(b.room);
+                  if (ga !== gb) return ga - gb;
+                  return a.orig - b.orig;
+                })
+                .map(({ room }, i) => (
+                  <RoomSection key={i} room={room} index={i} />
+                ))}
             </div>
           ) : (
             <p className="text-muted-foreground">Loading items...</p>
