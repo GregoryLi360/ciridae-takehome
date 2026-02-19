@@ -34,6 +34,8 @@ class Job:
     id: str
     status: str = "pending"
     progress: str | None = None
+    step: int = 0
+    total_steps: int = 1
     error: str | None = None
     jdr_path: str = ""
     ins_path: str = ""
@@ -78,7 +80,12 @@ def _build_summary(result: ComparisonResult) -> dict:
 
 
 def _job_response(job: Job) -> dict:
-    resp: dict = {"id": job.id, "status": job.status}
+    resp: dict = {
+        "id": job.id,
+        "status": job.status,
+        "step": job.step,
+        "total_steps": job.total_steps,
+    }
     if job.progress:
         resp["progress"] = job.progress
     if job.summary:
@@ -95,25 +102,56 @@ def _job_response(job: Job) -> dict:
 
 async def _run_pipeline(job: Job) -> None:
     try:
+        # --- Parsing (progress reported per-page via callback) ---
         job.status = "parsing"
+        job.step = 0
+        job.total_steps = 1
+        job.progress = "Starting..."
+
+        import threading
+        _progress_lock = threading.Lock()
+        _source_progress: dict[str, tuple[int, int]] = {}  # source -> (step, total)
+
+        def _make_progress_cb(source: str):
+            def _on_progress(step: int, total: int, label: str) -> None:
+                with _progress_lock:
+                    _source_progress[source] = (step, total)
+                    combined_step = sum(s for s, _ in _source_progress.values())
+                    combined_total = sum(t for _, t in _source_progress.values())
+                    job.step = combined_step
+                    job.total_steps = combined_total
+                    job.progress = label
+            return _on_progress
+
         jdr_doc, ins_doc = await asyncio.gather(
-            asyncio.to_thread(parse_document, job.jdr_path, "jdr"),
-            asyncio.to_thread(parse_document, job.ins_path, "insurance"),
+            asyncio.to_thread(parse_document, job.jdr_path, "jdr", _make_progress_cb("jdr")),
+            asyncio.to_thread(parse_document, job.ins_path, "insurance", _make_progress_cb("insurance")),
         )
 
+        # --- Matching ---
         job.status = "matching"
+        job.step = 0
+        job.total_steps = 1
+        job.progress = "Mapping rooms and matching line items..."
         result = await asyncio.to_thread(compare_documents, jdr_doc, ins_doc)
+        job.step = 1
 
+        # --- Annotating ---
         job.status = "annotating"
+        job.step = 0
+        job.total_steps = 1
+        job.progress = "Generating comments and highlights..."
         output_path = os.path.join(
             os.path.dirname(job.jdr_path), "annotated_output.pdf"
         )
         await asyncio.to_thread(annotate_pdf, job.jdr_path, result, output_path)
+        job.step = 1
 
         job.result = result
         job.output_pdf = output_path
         job.summary = _build_summary(result)
         job.status = "complete"
+        job.progress = None
     except Exception as exc:
         job.status = "error"
         job.error = str(exc)

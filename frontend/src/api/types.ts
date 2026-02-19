@@ -10,6 +10,8 @@ export interface JobResponse {
   id: string;
   status: JobStatus;
   progress?: string;
+  step: number;
+  total_steps: number;
   summary?: {
     total_jdr_items: number;
     total_ins_items: number;

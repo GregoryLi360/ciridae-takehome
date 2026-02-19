@@ -3,6 +3,8 @@ import type { JobResponse, ItemsResponse } from "./types";
 export const MOCK_JOB_COMPLETE: JobResponse = {
   id: "demo-001",
   status: "complete",
+  step: 1,
+  total_steps: 1,
   summary: {
     total_jdr_items: 181,
     total_ins_items: 95,

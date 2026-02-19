@@ -78,6 +78,8 @@ class ComparisonResult(BaseModel):
 
 ### Step 1 — PDF Parsing (Hybrid: LLM Text + Vision + PyMuPDF)
 
+Both documents are parsed in parallel via `asyncio.gather`. Each `parse_document()` call accepts an `on_progress(step, total, label)` callback that fires as each LLM request starts. The pipeline aggregates progress from both documents (per-source tracking with a lock) so `step`/`total_steps` only ever increase.
+
 Two-phase approach within a single `parse_document()` call:
 
 1. **Room splitting (PyMuPDF text + text LLM)** — Extract page text via PyMuPDF `get_text()`, then send to `fast-production` (text-only, no vision) to identify room sections. Returns canonical room names per page with continuation flags (e.g. "CONTINUED - Bathroom" → "Bathroom"). Pages with little/no text are skipped. Photo pages and summary pages are filtered out by checking for table structure.
@@ -154,18 +156,18 @@ Each field gets its own tight `(x0, y0, x1, y1)` bbox. Insurance items skip bbox
 | Method | Path                     | Description                          |
 |--------|--------------------------|--------------------------------------|
 | POST   | `/api/jobs`              | Upload JDR + Insurance PDFs, create job |
-| GET    | `/api/jobs/{id}`         | Poll job status + summary stats      |
+| GET    | `/api/jobs/{id}`         | Poll job status, progress, + summary stats |
 | GET    | `/api/jobs/{id}/result`  | Download annotated PDF               |
 | GET    | `/api/jobs/{id}/items`   | Get all line items + classifications  |
 
-Job processing runs as a background task (`BackgroundTasks` or simple task queue).
+Job processing runs as a background task (`asyncio.create_task`). The poll endpoint returns `step` and `total_steps` for the current stage, enabling per-page progress bars on the frontend.
 
 ## 5. Frontend
 
 Single-page app with three states:
 
-1. **Upload** — Two drag-and-drop zones (JDR / Insurance) with file type validation, submit button
-2. **Processing** — Stage-by-stage progress indicator (parsing JDR → parsing insurance → matching → annotating → complete), polls `GET /api/jobs/{id}` every 2s via React Query
+1. **Upload** — Two drag-and-drop zones (JDR / Insurance) with Zod PDF validation, submit button
+2. **Processing** — Stage-by-stage progress bars with per-page granularity (parsing → matching → annotating → complete), polls `GET /api/jobs/{id}` every 2s via React Query. Each stage shows a progress bar driven by `step`/`total_steps` from the backend, a percentage, and a sub-stage label.
 3. **Results** — Summary stat cards (green/orange/blue/nugget counts), room-by-room collapsible breakdown showing matched pairs with diff notes and dollar totals, annotated PDF download button
 
 ## 6. LLM Usage
@@ -195,7 +197,8 @@ All calls go through Ciridae Gateway (`https://api.llmgateway.ciridae.app`).
 - **Single color per item** — Each line item gets one highlight color on the description only, avoiding visual noise from per-field multi-color highlights
 - **Inline nugget annotations** — Insurance-only items appear as sticky notes on the relevant room's last JDR page, matching the ground truth markup style
 - **PyMuPDF for annotation** — Preserves original PDF layout; draws highlight annotations and sticky notes using bbox coordinates from parsing
-- **Background processing** — PDF pipeline takes 30-90s; async avoids request timeouts
+- **Per-page progress tracking** — `parse_document` fires a callback as each LLM request starts; the pipeline aggregates both documents' progress under a lock so the frontend bar fills smoothly without jumping
+- **Background processing** — PDF pipeline takes <5s per page; async avoids request timeouts
 
 ## 8. Tech Stack
 
@@ -203,7 +206,7 @@ All calls go through Ciridae Gateway (`https://api.llmgateway.ciridae.app`).
 - **Frontend:** TypeScript, React 19, Vite
 - **State/Data:** React Query (TanStack Query)
 - **Styling/UI:** TailwindCSS, shadcn/ui
-- **Validation:** Pydantic (backend) / TypeScript interfaces (frontend)
+- **Validation:** Pydantic (backend) / Zod (upload) + TypeScript interfaces (frontend)
 - **LLM Calls:** Ciridae LLM Gateway (OpenAI-compatible API)
 
 ## 9. Directory Structure

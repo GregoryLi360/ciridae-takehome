@@ -1,7 +1,18 @@
 import { useCallback, useState } from "react";
 import { Upload, FileText, ArrowRight } from "lucide-react";
+import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+
+const PdfFile = z.instanceof(File).refine(
+  (f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"),
+  { message: "File must be a PDF" }
+);
+
+const UploadSchema = z.object({
+  jdr: PdfFile,
+  insurance: PdfFile,
+});
 
 interface Props {
   onSubmit: (files: { jdr: File; insurance: File }) => void;
@@ -27,7 +38,7 @@ function Dropzone({
       e.preventDefault();
       setDragOver(false);
       const f = e.dataTransfer.files[0];
-      if (f?.type === "application/pdf") onFile(f);
+      if (f && PdfFile.safeParse(f).success) onFile(f);
     },
     [onFile]
   );
@@ -87,8 +98,20 @@ function Dropzone({
 export default function UploadForm({ onSubmit, isLoading, error }: Props) {
   const [jdr, setJdr] = useState<File | null>(null);
   const [ins, setIns] = useState<File | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const ready = jdr && ins && !isLoading;
+
+  const handleSubmit = () => {
+    if (!jdr || !ins) return;
+    const result = UploadSchema.safeParse({ jdr, insurance: ins });
+    if (!result.success) {
+      setValidationError(result.error.issues[0].message);
+      return;
+    }
+    setValidationError(null);
+    onSubmit(result.data);
+  };
 
   return (
     <section className="min-h-[calc(100vh-72px)] flex items-center">
@@ -124,15 +147,15 @@ export default function UploadForm({ onSubmit, isLoading, error }: Props) {
         <Button
           type="button"
           disabled={!ready}
-          onClick={() => ready && onSubmit({ jdr: jdr!, insurance: ins! })}
+          onClick={handleSubmit}
           className="mt-12"
         >
           {isLoading ? "Uploading..." : "Analyze proposals"}
           <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
         </Button>
 
-        {error && (
-          <p className="mt-4 text-sm text-red-400">{error}</p>
+        {(error || validationError) && (
+          <p className="mt-4 text-sm text-red-400">{validationError || error}</p>
         )}
       </div>
     </section>

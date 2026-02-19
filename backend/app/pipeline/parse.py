@@ -1,5 +1,7 @@
 import base64
 import re
+import threading
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 
 import fitz
@@ -242,9 +244,27 @@ def _locate_bboxes(page: fitz.Page, item, claimed: list[Bbox] | None = None) -> 
 
 # --- Main pipeline ---
 
-def parse_document(pdf_path: str, source: str) -> ParsedDocument:
+def parse_document(
+    pdf_path: str,
+    source: str,
+    on_progress: Callable[[int, int, str], None] | None = None,
+) -> ParsedDocument:
     doc = fitz.open(pdf_path)
     total_pages = len(doc)
+
+    # We'll know exact total after phase 1 reveals content pages.
+    # Estimate: total_pages (room splits) + total_pages (extractions).
+    # Updated after phase 1 with actual content page count.
+    steps_done = 0
+    estimated_total = total_pages * 2
+    _lock = threading.Lock()
+
+    def _tick(label: str) -> None:
+        nonlocal steps_done
+        with _lock:
+            steps_done += 1
+            if on_progress:
+                on_progress(steps_done, estimated_total, label)
 
     # Phase 1: Extract page text (PyMuPDF, fast) and room-split (text LLM)
     page_texts = [doc[i].get_text() for i in range(total_pages)]
@@ -252,7 +272,9 @@ def parse_document(pdf_path: str, source: str) -> ParsedDocument:
     def _room_split(page_idx: int) -> list[str]:
         text = page_texts[page_idx].strip()
         if not text or len(text) < 30:
+            _tick(f"Room split page {page_idx+1}/{total_pages}")
             return []
+        _tick(f"Room split page {page_idx+1}/{total_pages}")
         print(f"    [{source}] room-split page {page_idx+1}/{total_pages}", flush=True)
         result = chat(ROOM_SPLIT_PROMPT, text, _PageRooms)
         return [r.room_name for r in result.rooms]
@@ -261,12 +283,15 @@ def parse_document(pdf_path: str, source: str) -> ParsedDocument:
 
     # Phase 2: Render content pages and extract line items (vision LLM)
     content_pages = [i for i, r in enumerate(page_rooms) if r]
+    # Update total now that we know how many content pages there are
+    estimated_total = total_pages + len(content_pages)
     # Only render pages that need extraction (sequential — fitz not thread-safe)
     page_images: dict[int, str] = {i: _render_page_b64(doc[i]) for i in content_pages}
 
     def _extract(page_idx: int) -> tuple[int, list[str], _LLMPageItems]:
         rooms = page_rooms[page_idx]
         step = content_pages.index(page_idx)
+        _tick(f"Extract page {page_idx+1} ({step+1}/{len(content_pages)})")
         print(f"    [{source}] extract page {page_idx+1} ({step+1}/{len(content_pages)})", flush=True)
         prompt = EXTRACTION_PROMPT_TEMPLATE.format(rooms=", ".join(rooms))
         return page_idx, rooms, vision_extract(page_images[page_idx], _LLMPageItems, prompt)

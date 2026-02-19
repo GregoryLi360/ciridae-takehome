@@ -46,6 +46,8 @@ React/Vite Frontend  ──▶  FastAPI Backend
 
 Two-phase hybrid approach:
 
+Both documents are parsed in parallel. Each `parse_document()` call reports per-page progress via a callback, aggregated across both documents so the frontend progress bar fills smoothly.
+
 1. **Room splitting** — PyMuPDF extracts page text, then a fast text-only LLM call (`fast-production`) identifies room sections (e.g. "Bathroom", "Garage"). Handles continuations across pages and filters out photo/summary pages. No vision call needed.
 2. **Line item extraction** — Content pages (those with rooms) are rendered at 200 DPI and sent to `claude-3-7-sonnet` with the known room list as context. Extracts description, quantity, unit, unit_price, total, and room assignment via structured Pydantic output.
 3. **Bbox location** — For JDR items, uses PyMuPDF's `get_text("words")` to locate each field's bounding box on the page. Tracks claimed bboxes per page to prevent duplicate highlights:
@@ -88,7 +90,7 @@ Per mapped room pair, an LLM call matches JDR items to insurance items by semant
 
 **Backend:** Python 3.13, FastAPI, PyMuPDF, Pydantic, OpenAI SDK, uv
 
-**Frontend:** TypeScript, React 19, Vite, TailwindCSS, shadcn/ui, React Query
+**Frontend:** TypeScript, React 19, Vite, TailwindCSS, shadcn/ui, React Query, Zod (upload validation)
 
 ## Directory Structure
 
