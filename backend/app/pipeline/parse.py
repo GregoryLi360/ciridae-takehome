@@ -1,6 +1,5 @@
 import base64
 import re
-import threading
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 
@@ -247,34 +246,30 @@ def _locate_bboxes(page: fitz.Page, item, claimed: list[Bbox] | None = None) -> 
 def parse_document(
     pdf_path: str,
     source: str,
-    on_progress: Callable[[int, int, str], None] | None = None,
+    on_step: Callable[[str], None] | None = None,
+    combined_pages: int | None = None,
+    page_offset: int = 0,
 ) -> ParsedDocument:
+    """Parse a PDF document. Calls ``on_step(label)`` each time an LLM
+    request starts so the caller can increment a shared progress counter.
+    ``combined_pages`` is the total page count across all documents (for labels).
+    ``page_offset`` shifts page numbers in labels for multi-document progress."""
     doc = fitz.open(pdf_path)
     total_pages = len(doc)
-
-    # We'll know exact total after phase 1 reveals content pages.
-    # Estimate: total_pages (room splits) + total_pages (extractions).
-    # Updated after phase 1 with actual content page count.
-    steps_done = 0
-    estimated_total = total_pages * 2
-    _lock = threading.Lock()
-
-    def _tick(label: str) -> None:
-        nonlocal steps_done
-        with _lock:
-            steps_done += 1
-            if on_progress:
-                on_progress(steps_done, estimated_total, label)
+    label_total = combined_pages or total_pages
 
     # Phase 1: Extract page text (PyMuPDF, fast) and room-split (text LLM)
     page_texts = [doc[i].get_text() for i in range(total_pages)]
 
     def _room_split(page_idx: int) -> list[str]:
         text = page_texts[page_idx].strip()
+        label_page = page_offset + page_idx + 1
         if not text or len(text) < 30:
-            _tick(f"Room split page {page_idx+1}/{total_pages}")
+            if on_step:
+                on_step(f"Room split page {label_page}/{label_total}")
             return []
-        _tick(f"Room split page {page_idx+1}/{total_pages}")
+        if on_step:
+            on_step(f"Room split page {label_page}/{label_total}")
         print(f"    [{source}] room-split page {page_idx+1}/{total_pages}", flush=True)
         result = chat(ROOM_SPLIT_PROMPT, text, _PageRooms)
         return [r.room_name for r in result.rooms]
@@ -283,16 +278,15 @@ def parse_document(
 
     # Phase 2: Render content pages and extract line items (vision LLM)
     content_pages = [i for i, r in enumerate(page_rooms) if r]
-    # Update total now that we know how many content pages there are
-    estimated_total = total_pages + len(content_pages)
     # Only render pages that need extraction (sequential — fitz not thread-safe)
     page_images: dict[int, str] = {i: _render_page_b64(doc[i]) for i in content_pages}
 
     def _extract(page_idx: int) -> tuple[int, list[str], _LLMPageItems]:
         rooms = page_rooms[page_idx]
-        step = content_pages.index(page_idx)
-        _tick(f"Extract page {page_idx+1} ({step+1}/{len(content_pages)})")
-        print(f"    [{source}] extract page {page_idx+1} ({step+1}/{len(content_pages)})", flush=True)
+        label_page = page_offset + page_idx + 1
+        if on_step:
+            on_step(f"Extract page {label_page}/{label_total}")
+        print(f"    [{source}] extract page {page_idx+1}/{total_pages}", flush=True)
         prompt = EXTRACTION_PROMPT_TEMPLATE.format(rooms=", ".join(rooms))
         return page_idx, rooms, vision_extract(page_images[page_idx], _LLMPageItems, prompt)
 

@@ -103,29 +103,31 @@ def _job_response(job: Job) -> dict:
 async def _run_pipeline(job: Job) -> None:
     try:
         # --- Parsing (progress reported per-page via callback) ---
+        import threading
+        import fitz as _fitz
+
+        # Count pages upfront for a stable total: 2 LLM calls per page
+        # (room split + extraction estimate) across both documents
+        jdr_pages = len(_fitz.open(job.jdr_path))
+        ins_pages = len(_fitz.open(job.ins_path))
+        total = (jdr_pages + ins_pages) * 2
+
         job.status = "parsing"
         job.step = 0
-        job.total_steps = 1
+        job.total_steps = total
         job.progress = "Starting..."
 
-        import threading
-        _progress_lock = threading.Lock()
-        _source_progress: dict[str, tuple[int, int]] = {}  # source -> (step, total)
+        _lock = threading.Lock()
 
-        def _make_progress_cb(source: str):
-            def _on_progress(step: int, total: int, label: str) -> None:
-                with _progress_lock:
-                    _source_progress[source] = (step, total)
-                    combined_step = sum(s for s, _ in _source_progress.values())
-                    combined_total = sum(t for _, t in _source_progress.values())
-                    job.step = combined_step
-                    job.total_steps = combined_total
-                    job.progress = label
-            return _on_progress
+        def _on_step(label: str) -> None:
+            with _lock:
+                job.step += 1
+                job.progress = label
 
+        combined = jdr_pages + ins_pages
         jdr_doc, ins_doc = await asyncio.gather(
-            asyncio.to_thread(parse_document, job.jdr_path, "jdr", _make_progress_cb("jdr")),
-            asyncio.to_thread(parse_document, job.ins_path, "insurance", _make_progress_cb("insurance")),
+            asyncio.to_thread(parse_document, job.jdr_path, "jdr", _on_step, combined, 0),
+            asyncio.to_thread(parse_document, job.ins_path, "insurance", _on_step, combined, jdr_pages),
         )
 
         # --- Matching ---
