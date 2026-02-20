@@ -7,7 +7,7 @@ Compares a JDR contractor repair proposal against an insurance adjuster's estima
 ```bash
 # Backend
 cd backend
-cp .env.example .env   # then edit .env and add your GATEWAY_API_KEY
+cp .env.example .env   # then edit .env and add GATEWAY_API_KEY from PDF
 uv sync
 uv run uvicorn app.main:app --reload
 
@@ -24,7 +24,7 @@ The backend runs on http://localhost:8000. The frontend runs on http://localhost
 The backend requires a `.env` file in `backend/` with:
 
 ```
-GATEWAY_API_KEY=your_key_here
+GATEWAY_API_KEY=api_key
 ```
 
 ## Architecture
